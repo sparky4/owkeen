@@ -5,7 +5,7 @@
 	logallrefupdates = true
 	symlinks = false
 [remote "origin"]
-	url = git@github.com:sparky4/owwolf3d.git
+	url = git@github.com:sparky4/owkeen.git
 	fetch = +refs/heads/*:refs/remotes/origin/*
 [branch "master"]
 	remote = origin
