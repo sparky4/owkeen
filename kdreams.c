@@ -27,8 +27,8 @@
 =============================================================================
 */
 
-#include "mem.h"
-#include "string.h"
+#include <mem.h>
+#include <string.h>
 
 #include "KD_DEF.H"
 #pragma hdrstop

@@ -1,0 +1,33 @@
+ID_HEADS.H(22): Error! E1055: Unable to open 'ALLOC.H'
+ID_HEADS.H(33): Error! E1055: Unable to open 'SYS\STAT.H'
+ID_MM.H(43): Error! E1009: Expecting ',' but found '*'
+ID_MM.H(78): Warning! W138: No newline at end of file
+ID_CA.H(71): Error! E1009: Expecting ',' but found '*'
+ID_CA.H(71): Error! E1034: Symbol '_seg' already defined
+ID_CA.H(71): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(71): Error! E1129: Type does not agree with previous definition of '_seg'
+ID_CA.H(71): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(74): Error! E1009: Expecting ',' but found '*'
+ID_CA.H(74): Error! E1034: Symbol '_seg' already defined
+ID_CA.H(74): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(74): Error! E1129: Type does not agree with previous definition of '_seg'
+ID_CA.H(74): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(75): Error! E1009: Expecting ',' but found '*'
+ID_CA.H(75): Error! E1034: Symbol '_seg' already defined
+ID_CA.H(75): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(75): Error! E1129: Type does not agree with previous definition of '_seg'
+ID_CA.H(75): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(76): Error! E1009: Expecting ',' but found '*'
+ID_CA.H(76): Error! E1034: Symbol '_seg' already defined
+ID_CA.H(76): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(76): Error! E1129: Type does not agree with previous definition of '_seg'
+ID_CA.H(76): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(77): Error! E1009: Expecting ',' but found '*'
+ID_CA.H(77): Error! E1034: Symbol '_seg' already defined
+ID_CA.H(77): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_CA.H(77): Error! E1129: Type does not agree with previous definition of '_seg'
+ID_CA.H(77): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_VW.H(197): Error! E1009: Expecting ',' but found '*'
+ID_VW.H(197): Error! E1034: Symbol '_seg' already defined
+ID_VW.H(197): Note! I2002: '_seg' defined in: ID_MM.H(43)
+ID_VW.H(197): Error! E1147: Too many errors: compilation aborted
