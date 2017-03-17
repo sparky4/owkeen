@@ -1,9 +1,7 @@
 #ifndef __KDASS_H__
 #define __KDASS_H__
-//#include "type.h"
+#include "id_heads.h"
 
-//#define WAITFORVBL 1			// setting to 0 causes setscreen and waitvbl
-							// to skip waiting for VBL (for timing things)
-
+//US_RndT
 
 #endif

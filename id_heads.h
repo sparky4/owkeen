@@ -40,6 +40,7 @@
 #include <limits.h> /* for LONG_MAX */
 #endif
 
+#ifndef __ID_GLOB__
 #define __ID_GLOB__
 
 
@@ -108,4 +109,4 @@ typedef	struct
 #include "ID_US.H"
 
 
-
+#endif

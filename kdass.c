@@ -1,7 +1,12 @@
 #include "kdass.h"
-/*
+
+//*
 int px,py;
-unsigned char		pdrawmode,fontcolor;
+byte		pdrawmode,fontcolor;
+unsigned	bufferwidth,bufferheight;	// used by font drawing stuff
+unsigned	**shifttabletable;
+
+#define	STATUS_REGISTER_1    0x3da
 
 //========
 //
@@ -14,11 +19,23 @@ void VW_WaitVBL(int num)
 	__asm {
 		mov	cx,num
 		mov	dx,03dah
-		VBLActive:
+#ifdef __BORLANDC__
+	}
+#endif
+VBLActive:
+#ifdef __BORLANDC__
+	__asm {
+#endif
 		in al,dx
 		test al,8
 		jnz VBLActive
-		noVBL:
+#ifdef __BORLANDC__
+	}
+#endif
+noVBL:
+#ifdef __BORLANDC__
+	__asm {
+#endif
 		in al,dx
 		test al,8
 		jz noVBL
@@ -156,4 +173,4 @@ SetScreen_done:
 		sti
 	}
 }
-*/
+//*/
