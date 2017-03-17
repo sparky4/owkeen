@@ -84,7 +84,7 @@ static	word			sqMode,sqFadeStep;
 				NeedsDigitized,NeedsMusic;
 	SDMode		SoundMode;
 	SMMode		MusicMode;
-	longword	TimeCount;
+	word	TimeCount;
 	word		*SoundTable;	// Really * _seg *SoundTable, but that don't work
 	boolean		ssIsTandy;
 	word		ssPort = 2;
@@ -194,7 +194,7 @@ SDL_TimingService(void)
 
 	outportb(0x20,0x20);				// Ack interrupt
 }
-
+/*
 ///////////////////////////////////////////////////////////////////////////
 //
 //	SDL_InitDelay() - Sets up TimerDelay's for SDL_Delay()
@@ -212,17 +212,36 @@ SDL_InitDelay(void)
 
 	for (i = 0,timer = 0;i < 10;i++)	// Do timing test 10 times
 	{
-	asm	xor		dx,dx					// Zero DX
-	asm	mov		cx,0xffff				// Put starting value in CX
-	asm	mov		[TimerDone],cx			// TimerDone = false - 1
+		__asm {
+			xor		dx,dx					// Zero DX
+			mov		cx,0xffff				// Put starting value in CX
+			mov		[TimerDone],cx			// TimerDone = false - 1
+#ifdef __BORLANDC__
+	}
+#endif
 startloop:
-	asm	or		[TimerDone],0
-	asm	jnz		startloop				// Make sure we're at the start
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			or		[TimerDone],0
+			jnz		startloop				// Make sure we're at the start
+#ifdef __BORLANDC__
+	}
+#endif
 loop:
-	asm	test	[TimerDone],1			// See if TimerDone flag got hit
-	asm	jnz		done					// Yep - drop out of the loop
-	asm	loop	loop
+#ifdef __BORLANDC__
+	__asm {
+#endif
+			test	[TimerDone],1			// See if TimerDone flag got hit
+			jnz		done					// Yep - drop out of the loop
+			loop	loop
+#ifdef __BORLANDC__
+	}
+#endif
 done:
+#ifdef __WATCOMC__
+	}
+#endif
 
 		if (0xffff - TimerVal > timer)
 			timer = 0xffff - TimerVal;
@@ -247,14 +266,26 @@ SDL_Delay(word delay)
 {
 	if (!delay)
 		return;
-
-asm	mov		cx,[delay]
+	__asm {
+			mov		cx,[delay]
+#ifdef __BORLANDC__
+	}
+#endif
 loop:
-asm	test	[TimerDone],0	// Useless code - just for timing equivilency
-asm	jnz		done
-asm	loop	loop
+#ifdef __BORLANDC__
+	__asm {
+#endif
+//			test	[TimerDone],0	// Useless code - just for timing equivilency
+			jnz		done
+			loop	loop
+#ifdef __BORLANDC__
+	}
+#endif
 done:;
-}
+#ifdef __WATCOMC__
+	}
+#endif
+}*/
 
 //
 //	PC Sound code
@@ -557,9 +588,20 @@ SDL_CheckSB(int port)
 	sbLocation = port << 4;		// Initialize stuff for later use
 
 	sbOut(sbReset,true);		// Reset the SoundBlaster DSP
-	SDL_Delay(TimerDelay10);	// Wait 4usec
+asm	mov	dx,0x388				// Wait >4usec
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+asm	in	al, dx
+
 	sbOut(sbReset,false);		// Turn off sb DSP reset
-	SDL_Delay(TimerDelay100);	// Wait 100usec
+asm	mov	dx,0x388				// Wait >100usec
+asm	mov	cx,100
 	for (i = 0;i < 100;i++)
 	{
 		if (sbIn(sbDataAvail) & 0x80)		// If data is available...
@@ -660,14 +702,32 @@ static void
 SDL_SSService(void)
 {
 	boolean	gotit;
+	boolean doneflag=false;
 	byte	v;
 
 	while (ssSample)
 	{
-	asm	mov		dx,[ssStatus]	// Check to see if FIFO is currently empty
-	asm	in		al,dx
-	asm	test	al,0x40
-	asm	jnz		done			// Nope - don't push any more data out
+	__asm {
+		mov		dx,[ssStatus]	// Check to see if FIFO is currently empty
+		in		al,dx
+		test	al,0x40
+		jnz		done			// Nope - don't push any more data out
+		jmp end
+#ifdef __BORLANDC__
+	}
+#endif
+		done:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	doneflag,1
+#ifdef __BORLANDC__
+	}
+#endif
+		end:
+#ifdef __WATCOMC__
+	}
+#endif
 
 		gotit = false;
 		if (ssIsSlow && (ssHoldOver != (word)-1))
@@ -700,28 +760,29 @@ SDL_SSService(void)
 			}
 		}
 
-		if (gotit)
+		if (gotit && !doneflag)
 		{
-		asm	mov		dx,[ssData]		// Pump the value out
-		asm	mov		al,[v]
-		asm	out		dx,al
+			__asm {
+				mov		dx,[ssData]		// Pump the value out
+				mov		al,[v]
+				out		dx,al
 
-		asm	mov		dx,[ssControl]	// Pulse printer select
-		asm	mov		al,[ssOff]
-		asm	out		dx,al
-		asm	push	ax
-		asm	pop		ax
-		asm	mov		al,[ssOn]
-		asm	out		dx,al
+				mov		dx,[ssControl]	// Pulse printer select
+				mov		al,[ssOff]
+				out		dx,al
+				push	ax
+				pop		ax
+				mov		al,[ssOn]
+				out		dx,al
 
-		asm	push	ax				// Delay a short while
-		asm	pop		ax
-		asm	push	ax
-		asm	pop		ax
+				push	ax				// Delay a short while
+				pop		ax
+				push	ax
+				pop		ax
+done:;
+			}
 		}
 	}
-done:
-	;	// Garbage for compiler
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -795,7 +856,7 @@ SDL_ShutSS(void)
 static boolean
 SDL_CheckSS(void)
 {
-	boolean		present = false;
+	boolean		present = false, chkdone=0;
 	longword	lasttime;
 
 	// Turn the Sound Source on and wait awhile (4 ticks)
@@ -803,42 +864,65 @@ SDL_CheckSS(void)
 
 	lasttime = TimeCount;
 	while (TimeCount < lasttime + 4)
-		;
+	{}
 
-asm	mov		dx,[ssStatus]	// Check to see if FIFO is currently empty
-asm	in		al,dx
-asm	test	al,0x40
-asm	jnz		checkdone		// Nope - Sound Source not here
+	__asm {
+		mov		dx,[ssStatus]	// Check to see if FIFO is currently empty
+		in		al,dx
+		test	al,0x40
+		jnz		checkdone		// Nope - Sound Source not here
 
-asm	mov		cx,32			// Force FIFO overflow (FIFO is 16 bytes)
+		mov		cx,32			// Force FIFO overflow (FIFO is 16 bytes)
+#ifdef __BORLANDC__
+	}
+#endif
 outloop:
-asm	mov		dx,[ssData]		// Pump a neutral value out
-asm	mov		al,0x80
-asm	out		dx,al
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov		dx,[ssData]		// Pump a neutral value out
+		mov		al,0x80
+		out		dx,al
 
-asm	mov		dx,[ssControl]	// Pulse printer select
-asm	mov		al,[ssOff]
-asm	out		dx,al
-asm	push	ax
-asm	pop		ax
-asm	mov		al,[ssOn]
-asm	out		dx,al
+		mov		dx,[ssControl]	// Pulse printer select
+		mov		al,[ssOff]
+		out		dx,al
+		push	ax
+		pop		ax
+		mov		al,[ssOn]
+		out		dx,al
 
-asm	push	ax				// Delay a short while before we do this again
-asm	pop		ax
-asm	push	ax
-asm	pop		ax
+		push	ax				// Delay a short while before we do this again
+		pop		ax
+		push	ax
+		pop		ax
 
-asm	loop	outloop
+		loop	outloop
 
-asm	mov		dx,[ssStatus]	// Is FIFO overflowed now?
-asm	in		al,dx
-asm	test	al,0x40
-asm	jz		checkdone		// Nope, still not - Sound Source not here
-
-	present = true;			// Yes - it's here!
-
+		mov		dx,[ssStatus]	// Is FIFO overflowed now?
+		in		al,dx
+		test	al,0x40
+		jz		checkdone		// Nope, still not - Sound Source not here
+		jmp end
+#ifdef __BORLANDC__
+	}
+#endif
 checkdone:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	chkdone,1
+#ifdef __BORLANDC__
+	}
+#endif
+		end:
+#ifdef __WATCOMC__
+	}
+#endif
+
+	if(!chkdone) present = true;			// Yes - it's here!
+
+//checkdone:
 	SDL_ShutSS();
 	return(present);
 }
@@ -862,21 +946,63 @@ SDL_DetectSoundSource(void)
 void
 alOut(byte n,byte b)
 {
-	asm	pushf
-	asm	cli
+asm	pushf
+asm	cli
 
-	asm	mov		dx,0x388
-	asm	mov		al,[n]
-	asm	out		dx,al
-	SDL_Delay(TimerDelay10);
+asm	mov	dx,0x388
+asm	mov	al,[n]
+asm	out	dx,al
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	inc	dx
+asm	mov	al,[b]
+asm	out	dx,al
 
-	asm	mov		dx,0x389
-	asm	mov		al,[b]
-	asm	out		dx,al
+asm	popf
 
-	asm	popf
+asm	dec	dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
 
-	SDL_Delay(TimerDelay25);
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
+asm	in	al,dx
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1145,7 +1271,23 @@ SDL_DetectAdLib(void)
 	status1 = readstat();
 	alOut(2,0xff);	// Set timer 1
 	alOut(4,0x21);	// Start timer 1
+#if 0
 	SDL_Delay(TimerDelay100);
+#else
+	__asm {
+		mov	dx,0x388
+		mov	cx,100
+#ifdef __BORLANDC__
+	}
+#endif
+usecloop:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+	in	al,dx
+	loop usecloop
+	}
+#endif
 
 	status2 = readstat();
 	alOut(4,0x60);
@@ -1439,7 +1581,7 @@ SD_Startup(void)
 
 	t0OldService = getvect(8);	// Get old timer 0 ISR
 
-	SDL_InitDelay();			// SDL_InitDelay() uses t0OldService
+	//SDL_InitDelay();			// SDL_InitDelay() uses t0OldService
 
 	setvect(8,SDL_t0Service);	// Set to my timer 0 ISR
 	LocalTime = TimeCount = 0;

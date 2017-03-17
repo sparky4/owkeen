@@ -1,7 +1,6 @@
 #!/bin/bash
-mv ./*.MAP ../
-mv ./*.EGA ../
-mv ./*.AUD ../
-mv ./*.CMP ../
-mv ./*.CK7 ../
-mv ./*.DAT ../
+mv ./KDREAMS.MAP	../
+mv ./KDREAMS.EGA	../
+mv ./KDREAMS.AUD	../
+mv ./KDREAMS.CMP	../
+mv ./KDREAMS.DAT	../

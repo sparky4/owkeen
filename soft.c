@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <alloc.h>
+#include <malloc.h>
 #include <fcntl.h>
 #include <dos.h>
 #include <io.h>

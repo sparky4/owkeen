@@ -42,13 +42,9 @@
 
 #define __ID_GLOB__
 
-// #ifdef __WATCOMC__
-// #ifndef EXTENSION
-// #endif
+
 #define	EXTENSION	"KDR"
-// #ifdef __WATCOMC__
-// #endif
-// #endif
+
 
 #include "GRAPHKDR.H"
 #include "AUDIOKDR.H"

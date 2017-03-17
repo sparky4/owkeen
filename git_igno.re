@@ -6,13 +6,12 @@ makefile~
 README~
 TODO~
 LICENCE~
-*.map
-*.MAP
-*.EGA
-*.AUD
-*.CMP
-*.CK7
-*.DAT
+KDREAMS.AUD
+KDREAMS.CFG
+KDREAMS.CMP
+KDREAMS.DAT
+KDREAMS.EGA
+KDREAMS.MAP
 !makefile
 !.git/config
 # except foo.html which is maintained by hand.

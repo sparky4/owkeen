@@ -31,6 +31,9 @@
 #include <string.h>
 
 #include "KD_DEF.H"
+#ifdef __WATCOMC__
+#include "kdass.h"
+#endif
 #pragma hdrstop
 
 /*
@@ -51,7 +54,7 @@
 
 char		str[80],str2[20];
 boolean		singlestep,jumpcheat,godmode,tedlevel;
-unsigned	tedlevelnum;
+short	tedlevelnum;
 
 /*
 =============================================================================
@@ -526,6 +529,9 @@ void main (void)
 //____	textbackground(0);
 
 	InitGame();
+
+TestSprites();
+DebugMemory();
 
 	DemoLoop();					// DemoLoop calls Quit when everything is done
 	Quit("Demo loop exited???");

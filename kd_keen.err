@@ -1,0 +1,18 @@
+kd_keen.c(114): Warning! W102: Type mismatch (warning)
+kd_keen.c(114): Note! I2003: source conversion type is 'void *'
+kd_keen.c(114): Note! I2004: target conversion type is 'int'
+kd_keen.c(114): Warning! W102: Type mismatch (warning)
+kd_keen.c(114): Note! I2003: source conversion type is 'void *'
+kd_keen.c(114): Note! I2004: target conversion type is 'int'
+kd_keen.c(900): Warning! W102: Type mismatch (warning)
+kd_keen.c(900): Note! I2003: source conversion type is 'void *'
+kd_keen.c(900): Note! I2004: target conversion type is 'int'
+kd_keen.c(900): Warning! W102: Type mismatch (warning)
+kd_keen.c(900): Note! I2003: source conversion type is 'void *'
+kd_keen.c(900): Note! I2004: target conversion type is 'int'
+kd_keen.c(922): Warning! W102: Type mismatch (warning)
+kd_keen.c(922): Note! I2003: source conversion type is 'void *'
+kd_keen.c(922): Note! I2004: target conversion type is 'int'
+kd_keen.c(922): Warning! W102: Type mismatch (warning)
+kd_keen.c(922): Note! I2003: source conversion type is 'void *'
+kd_keen.c(922): Note! I2004: target conversion type is 'int'

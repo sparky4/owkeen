@@ -84,9 +84,9 @@ LIBFLAGS=$(WLIBQ) -b -n
 #
 #CONTEXT.OBJ GAMETEXT.OBJ KDRADICT.OBJ KDRAHEAD.OBJ KDRCDICT.OBJ KDRCHEAD.OBJ KDREDICT.OBJ KDREHEAD.OBJ KDRMDICT.OBJ KDRMHEAD.OBJ STORY.OBJ
 STATICOBJS = context.obj gametext.obj kdradict.obj kdrahead.obj kdrcdict.obj kdrchead.obj kdredict.obj kdrehead.obj kdrmdict.obj kdrmhead.obj story.obj
-IDENGOBJS = id_mm.$(OBJ) id_ca.$(OBJ) id_pm.$(OBJ) id_vw.$(OBJ) id_rf.$(OBJ) id_in.$(OBJ) id_sd.$(OBJ) id_us.$(OBJ)
-MOREOBJS = gelib.$(OBJ) jam_io.$(OBJ) soft.$(OBJ) lshuf$(OBJ)
-#kdass$(OBJ)
+IDENGOBJS = id_mm.$(OBJ) id_ca.$(OBJ) id_vw.$(OBJ) id_rf.$(OBJ) id_in.$(OBJ) id_sd.$(OBJ) id_us.$(OBJ)
+#id_pm.$(OBJ)
+MOREOBJS = gelib.$(OBJ) jam_io.$(OBJ) soft.$(OBJ) lzhuf.$(OBJ) kdass.$(OBJ)
 KDOBJS = kd_demo.$(OBJ) kd_play.$(OBJ) kd_keen.$(OBJ) kd_act1.$(OBJ) kd_act2.$(OBJ) $(IDENGOBJS) $(MOREOBJS)
 # $(STATICOBJS)
 #id_us_a.$(OBJ) id_sd_a.$(OBJ) id_sd_a.$(OBJ)
@@ -178,6 +178,7 @@ kd_act1.$(OBJ):	kd_act1.c
 kd_act2.$(OBJ):	kd_act2.c
 kd_play.$(OBJ):	kd_play.c
 kd_demo.$(OBJ):	kd_demo.c
+lzhuf.$(OBJ):	lzhuf.c
 kdass.$(OBJ):	kdass.c
 #id_exter.$(OBJ):	id_exter.c
 #id_vl_a.$(OBJ):	id_vl_a.asm

@@ -1030,25 +1030,39 @@ void RF_NewPosition (unsigned x, unsigned y)
 void	RFL_OldRow (unsigned updatespot,unsigned count,unsigned step)
 {
 
-asm	mov	si,[updatespot]			// pointer inside each map plane
-asm	mov	cx,[count]				// number of tiles to clear
-asm	mov	dx,[step]				// move to next tile
-asm	mov	es,[WORD PTR mapsegs]			// background plane
-asm	mov	ds,[WORD PTR mapsegs+2]			// foreground plane
+	__asm {
+		mov	si,[updatespot]			// pointer inside each map plane
+		mov	cx,[count]				// number of tiles to clear
+		mov	dx,[step]				// move to next tile
+		mov	es,[WORD PTR mapsegs]			// background plane
+		mov	ds,[WORD PTR mapsegs+2]			// foreground plane
+#ifdef __BORLANDC__
+	}
+#endif
 
 clearcache:
-asm	mov	bx,[si]
-asm	or	bx,bx
-asm	jnz	blockok					// if a foreground tile, block wasn't cached
-asm	mov	bx,[es:si]
-asm	shl	bx,1
-asm	mov	[WORD PTR ss:tilecache+bx],0  //tile is no longer in master screen cache
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	bx,[si]
+		or	bx,bx
+		jnz	blockok					// if a foreground tile, block wasn't cached
+		mov	bx,[es:si]
+		shl	bx,1
+		mov	[WORD PTR ss:tilecache+bx],0  //tile is no longer in master screen cache
+#ifdef __BORLANDC__
+	}
+#endif
 blockok:
-asm	add	si,dx
-asm	loop	clearcache
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		add	si,dx
+		loop	clearcache
 
-asm	mov	ax,ss
-asm	mov	ds,ax
+		mov	ax,ss
+		mov	ds,ax
+	}
 
 }
 

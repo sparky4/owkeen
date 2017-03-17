@@ -790,3 +790,19 @@ long MM_TotalFree (void)
 	return free*16l;
 }
 
+//==========================================================================
+
+/*
+=====================
+=
+= MM_BombOnError
+=
+=====================
+*/
+
+void MM_BombOnError (boolean bomb)
+{
+	bombonerror = bomb;
+}
+
+

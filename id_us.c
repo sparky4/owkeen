@@ -381,7 +381,9 @@ US_Startup(void)
 	if (US_Started)
 		return;
 
+#ifdef __BORLANDC__
 	harderr(USL_HardError);	// Install the fatal error handler
+#endif
 
 	US_InitRndT(true);		// Initialize the random number generator
 
@@ -493,7 +495,6 @@ USL_ClearTextScreen(void)
 	_DH = 24;				// Bottom row
 	_AH = 0x02;
 	geninterrupt(0x10);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -513,9 +514,11 @@ US_TextScreen(void)
 
 #define	scr_rowcol(y,x)	{sx = (x) - 1;sy = (y) - 1;}
 #define	scr_aputs(s,a)	USL_ScreenDraw(sx,sy,(s),(a))
-#include "ID_US_S.c"
+#ifdef __BORLANDC__
+#include "id_us_s.c"
 #undef	scr_rowcol
 #undef	scr_aputs
+#endif
 
 	// Check for TED launching here
 	for (i = 1;i < _argc;i++)
@@ -2191,7 +2194,6 @@ USL_CtlCJoyButtonCustom(UserCall call,word i,word n)
 	FlushHelp = true;
 	fontcolor = F_SECONDCOLOR;
 
-
 	while (!(Done))
 	{
 		USL_ShowHelp("Move Joystick to the Upper-Left");
@@ -2225,7 +2227,6 @@ USL_CtlCJoyButtonCustom(UserCall call,word i,word n)
 		else
 			Done = true;
 	}
-
 
 	if (LastScan != sc_Escape)
 		while (IN_GetJoyButtonsDB(joy))

@@ -270,59 +270,71 @@ IN_GetJoyAbs(word joy,word *xp,word *yp)
 	yb = 1 << ys;
 
 // Read the absolute joystick values
-asm		pushf				// Save some registers
-asm		push	si
-asm		push	di
-asm		cli					// Make sure an interrupt doesn't screw the timings
+	__asm {
+		pushf				// Save some registers
+		push	si
+		push	di
+		cli					// Make sure an interrupt doesn't screw the timings
 
 
-asm		mov		dx,0x201
-asm		in		al,dx
-asm		out		dx,al		// Clear the resistors
+		mov		dx,0x201
+		in		al,dx
+		out		dx,al		// Clear the resistors
 
-asm		mov		ah,[xb]		// Get masks into registers
-asm		mov		ch,[yb]
+		mov		ah,[xb]		// Get masks into registers
+		mov		ch,[yb]
 
-asm		xor		si,si		// Clear count registers
-asm		xor		di,di
-asm		xor		bh,bh		// Clear high byte of bx for later
+		xor		si,si		// Clear count registers
+		xor		di,di
+		xor		bh,bh		// Clear high byte of bx for later
 
-asm		push	bp			// Don't mess up stack frame
-asm		mov		bp,MaxJoyValue
+		push	bp			// Don't mess up stack frame
+		mov		bp,MaxJoyValue
+#ifdef __BORLANDC__
+	}
+#endif
+loo:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		in		al,dx		// Get bits indicating whether all are finished
 
-loop:
-asm		in		al,dx		// Get bits indicating whether all are finished
+		dec		bp			// Check bounding register
+		jz		done		// We have a silly value - abort
 
-asm		dec		bp			// Check bounding register
-asm		jz		done		// We have a silly value - abort
+		mov		bl,al		// Duplicate the bits
+		and		bl,ah		// Mask off useless bits (in [xb])
+		add		si,bx		// Possibly increment count register
+		mov		cl,bl		// Save for testing later
 
-asm		mov		bl,al		// Duplicate the bits
-asm		and		bl,ah		// Mask off useless bits (in [xb])
-asm		add		si,bx		// Possibly increment count register
-asm		mov		cl,bl		// Save for testing later
+		mov		bl,al
+		and		bl,ch		// [yb]
+		add		di,bx
 
-asm		mov		bl,al
-asm		and		bl,ch		// [yb]
-asm		add		di,bx
-
-asm		add		cl,bl
-asm		jnz		loop 		// If both bits were 0, drop out
-
+		add		cl,bl
+		jnz		loo		// If both bits were 0, drop out
+#ifdef __BORLANDC__
+	}
+#endif
 done:
-asm     pop		bp
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		pop		bp
 
-asm		mov		cl,[xs]		// Get the number of bits to shift
-asm		shr		si,cl		//  and shift the count that many times
+		mov		cl,[xs]		// Get the number of bits to shift
+		shr		si,cl		//  and shift the count that many times
 
-asm		mov		cl,[ys]
-asm		shr		di,cl
+		mov		cl,[ys]
+		shr		di,cl
 
-asm		mov		[x],si		// Store the values into the variables
-asm		mov		[y],di
+		mov		[x],si		// Store the values into the variables
+		mov		[y],di
 
-asm		pop		di
-asm		pop		si
-asm		popf				// Restore the registers
+		pop		di
+		pop		si
+		popf				// Restore the registers
+	}
 
 	*xp = x;
 	*yp = y;
