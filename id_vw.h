@@ -36,12 +36,12 @@
 
 #define	G_P_SHIFT		4	// global >> ?? = pixels
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 #define	SCREENWIDTH		64
 #define CHARWIDTH		1
 #define TILEWIDTH		2
 #endif
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 #define	SCREENWIDTH		128
 #define CHARWIDTH		2
 #define TILEWIDTH		4
@@ -51,7 +51,7 @@
 #define	VIRTUALWIDTH	512
 
 
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 
 #define	MAXSHIFTS		1
 
@@ -66,7 +66,7 @@
 
 #endif
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 
 #define	MAXSHIFTS		8
 
@@ -220,9 +220,12 @@ cardtype	VW_VideoID (void);
 // EGA hardware routines
 //
 
-#define EGAWRITEMODE(x) asm{cli;mov dx,GC_INDEX;mov ax,GC_MODE+256*x;out dx,ax;sti;}
-#define EGABITMASK(x) asm{mov dx,GC_INDEX;mov ax,GC_BITMASK+256*x;out dx,ax;sti;}
-#define EGAMAPMASK(x) asm{cli;mov dx,SC_INDEX;mov ax,SC_MAPMASK+x*256;out dx,ax;sti;}
+//#define EGAWRITEMODE(x) asm{cli;mov dx,GC_INDEX;mov ax,GC_MODE+256*x;out dx,ax;sti;}
+//#define EGABITMASK(x) asm{mov dx,GC_INDEX;mov ax,GC_BITMASK+256*x;out dx,ax;sti;}
+//#define EGAMAPMASK(x) asm{cli;mov dx,SC_INDEX;mov ax,SC_MAPMASK+x*256;out dx,ax;sti;}
+void EGAWRITEMODE(word x);
+void EGABITMASK(word x);
+void EGAMAPMASK(word x);
 
 void 	VW_SetLineWidth(int width);
 void 	VW_SetScreen (unsigned CRTC, unsigned pelpan);
@@ -255,7 +258,7 @@ void VW_ScreenToScreen(unsigned source,unsigned dest,unsigned width,unsigned hei
 
 void VW_DrawTile8(unsigned x, unsigned y, unsigned tile);
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 
 #define VW_DrawTile8M(x,y,t) \
 	VW_MaskBlock(grsegs[STARTTILE8M],(t)*40,bufferofs+ylookup[y]+(x),1,8,8)
@@ -266,7 +269,7 @@ void VW_DrawTile8(unsigned x, unsigned y, unsigned tile);
 
 #endif
 
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 
 #define VW_DrawTile8M(x,y,t) \
 	VW_MaskBlock(grsegs[STARTTILE8M],(t)*32,bufferofs+ylookup[y]+(x),2,8,16)

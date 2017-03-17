@@ -18,7 +18,6 @@
 
 // KD_DEMO.C
 
-#include <dir.h>
 #include "KD_DEF.H"
 
 #pragma	hdrstop

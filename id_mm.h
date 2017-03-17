@@ -38,6 +38,50 @@ void Quit (char *error);
 
 #define MAXBLOCKS		1300
 
+//--------
+
+#define	EMS_INT			0x67
+#define	EMM_INT			0x21
+
+#define	EMS_STATUS		0x40
+#define	EMS_GETFRAME	0x41
+#define	EMS_GETPAGES	0x42
+#define	EMS_ALLOCPAGES	0x43
+#define	EMS_MAPPAGE		0x44
+#define	EMS_MAPXPAGE		0x50
+#define	EMS_FREEPAGES	0x45
+#define	EMS_VERSION		0x46
+
+//--------
+
+#define	XMS_INT			0x2f
+#define	XMS_CALL(v)		_AH = (v);\
+						__asm call [DWORD PTR XMSDriver]
+/*__asm { mov ah,[v]\*///}
+
+#define	XMS_VERSION		0x00
+
+#define	XMS_ALLOCHMA		0x01
+#define	XMS_FREEHMA		0x02
+
+#define	XMS_GENABLEA20	0x03
+#define	XMS_GDISABLEA20	0x04
+#define	XMS_LENABLEA20	0x05
+#define	XMS_LDISABLEA20	0x06
+#define	XMS_QUERYA20		0x07
+
+#define	XMS_QUERYFREE	0x08
+#define	XMS_ALLOC		0x09
+#define	XMS_FREE			0x0A
+#define	XMS_MOVE			0x0B
+#define	XMS_LOCK			0x0C
+#define	XMS_UNLOCK		0x0D
+#define	XMS_GETINFO		0x0E
+#define	XMS_RESIZE		0x0F
+
+#define	XMS_ALLOCUMB		0x10
+#define	XMS_FREEUMB		0x11
+
 //==========================================================================
 
 typedef void _seg * memptr;

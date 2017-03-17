@@ -97,7 +97,7 @@ void DebugMemory (void)
 	US_Print ("k\n");
 	VW_UpdateScreen();
 	IN_Ack ();
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 	MM_ShowMemory ();
 #endif
 }
@@ -413,7 +413,7 @@ void InitGame (void)
 #endif
 
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 	if (mminfo.mainmem < 335l*1024)
 	{
 #pragma	warn	-pro
@@ -426,7 +426,7 @@ void InitGame (void)
 		puts ("correct solution is to unload some TSRs or rename your CONFIG.SYS and");
 		puts ("AUTOEXEC.BAT to free up more memory.\n");
 		puts ("Do you want to (Q)uit, or (C)ontinue?");
-		i = bioskey (0);
+		i = getch();//____bioskey (0);
 		if ( (i>>8) != sc_C)
 			Quit ("");
 	}
@@ -473,7 +473,7 @@ void InitGame (void)
 
 	US_FinishTextScreen();
 
-	VW_SetScreenMode (GRMODE);
+	VW_SetScreenMode (grmode);
 	VW_ClearVideo (BLACK);
 }
 
@@ -522,8 +522,8 @@ void main (void)
 		exit(0);
 	}
 
-	textcolor(7);
-	textbackground(0);
+//____	textcolor(7);
+//____	textbackground(0);
 
 	InitGame();
 

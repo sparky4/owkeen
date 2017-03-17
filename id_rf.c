@@ -196,7 +196,7 @@ unsigned	xpanmask;			// prevent panning to odd pixels
 unsigned	screenpage;			// screen currently being displayed
 unsigned	otherpage;
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 unsigned	tilecache[NUMTILE16];
 #endif
 
@@ -748,7 +748,7 @@ void RFL_AnimateTiles (void)
 
 			*(current->mapplane) = tile & 0x7fff; 		// change in map
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 			if (tile<0x8000)		// background
 				tilecache[tile] = 0;
 #endif
@@ -828,14 +828,14 @@ void RFL_CalcOriginStuff (long x, long y)
 	originyscreen = originytile<<SY_T_SHIFT;
 	originmap = mapbwidthtable[originytile] + originxtile*2;
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 	panx = (originxglobal>>G_P_SHIFT) & 15;
 	pansx = panx & 8;
 	pany = pansy = (originyglobal>>G_P_SHIFT) & 15;
 	panadjust = panx/8 + ylookup[pany];
 #endif
 
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 	panx = (originxglobal>>G_P_SHIFT) & 15;
 	pansx = panx & 12;
 	pany = pansy = (originyglobal>>G_P_SHIFT) & 15;
@@ -958,7 +958,7 @@ void RF_ForceRefresh (void)
 =============================================================================
 */
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 
 
 /*
@@ -1728,7 +1728,7 @@ asm	mov	[WORD PTR es:di],UPDATETERMINATE
 =============================================================================
 */
 
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 
 
 /*

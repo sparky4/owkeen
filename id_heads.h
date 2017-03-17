@@ -19,7 +19,7 @@
 // ID_GLOB.H
 
 
-#include <ALLOC.H>
+#include <MALLOC.H>
 #include <ctype.h>
 #include <DOS.H>
 #include <ERRNO.H>
@@ -30,11 +30,25 @@
 #include <STDIO.H>
 #include <STDLIB.H>
 #include <STRING.H>
-#include <SYS\STAT.H>
+#include <SYS/STAT.H>
+#include <conio.h>
+
+#ifdef __BORLANDC__
+#include <DIR.H>
+#endif
+#ifdef __WATCOMC__
+#include <limits.h> /* for LONG_MAX */
+#endif
 
 #define __ID_GLOB__
 
+// #ifdef __WATCOMC__
+// #ifndef EXTENSION
+// #endif
 #define	EXTENSION	"KDR"
+// #ifdef __WATCOMC__
+// #endif
+// #endif
 
 #include "GRAPHKDR.H"
 #include "AUDIOKDR.H"
@@ -44,14 +58,19 @@
 #define	EGAGR	2
 #define	VGAGR	3
 
-#define GRMODE	EGAGR
+//#define GRMODE	EGAGR
+#define GRMODEEGA
+//#define GRMODECGA
+//#define GRMODEVGA
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 #define GREXT	"EGA"
 #endif
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 #define GREXT	"CGA"
 #endif
+
+#include "type.h"
 
 //#define PROFILE
 
@@ -84,6 +103,7 @@ typedef	struct
 #endif
 
 #include "ID_MM.H"
+#include "ID_PM.H"
 #include "ID_CA.H"
 #include "ID_VW.H"
 #include "ID_RF.H"

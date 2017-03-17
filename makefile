@@ -76,18 +76,19 @@ T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1
 CPPFLAGS=-DTARGET_MSDOS=16 -DMSDOS=1
 AFLAGS=$(WCLQ) $(T_FLAGS)
 CFLAGS=$(WCLQ) $(T_FLAGS) -wo $(O_FLAGS) $(S_FLAGS) $(Z_FLAGS)
-LFLAGS=$(WCLQ) -l=dos -fm=$^&.map $(S_FLAGS)
+LFLAGS=$(WCLQ) -l=dos -fm=$^&.meh $(S_FLAGS)
 LIBFLAGS=$(WLIBQ) -b -n
 
 #
 # objects
 #
-STATICOBJS = CONTEXT.OBJ GAMETEXT.OBJ KDRADICT.OBJ KDRAHEAD.OBJ KDRCDICT.OBJ KDRCHEAD.OBJ KDREDICT.OBJ KDREHEAD.OBJ KDRMDICT.OBJ KDRMHEAD.OBJ STORY.OBJ
-IDENGOBJS = id_mm$(OBJ) id_ca$(OBJ) id_vw$(OBJ) id_rf$(OBJ) id_in$(OBJ) id_sd$(OBJ) id_us$(OBJ)
-MOREOBJS = gelib$(OBJ) jam_io$(OBJ) soft$(OBJ) lshuf$(OBJ)
-#id_pm.$(OBJ)
+#CONTEXT.OBJ GAMETEXT.OBJ KDRADICT.OBJ KDRAHEAD.OBJ KDRCDICT.OBJ KDRCHEAD.OBJ KDREDICT.OBJ KDREHEAD.OBJ KDRMDICT.OBJ KDRMHEAD.OBJ STORY.OBJ
+STATICOBJS = context.obj gametext.obj kdradict.obj kdrahead.obj kdrcdict.obj kdrchead.obj kdredict.obj kdrehead.obj kdrmdict.obj kdrmhead.obj story.obj
+IDENGOBJS = id_mm.$(OBJ) id_ca.$(OBJ) id_pm.$(OBJ) id_vw.$(OBJ) id_rf.$(OBJ) id_in.$(OBJ) id_sd.$(OBJ) id_us.$(OBJ)
+MOREOBJS = gelib.$(OBJ) jam_io.$(OBJ) soft.$(OBJ) lshuf$(OBJ)
 #kdass$(OBJ)
-KDOBJS = kd_demo$(OBJ) kd_play$(OBJ) kd_keen$(OBJ) kd_act1$(OBJ) kd_act2$(OBJ) $(IDENGOBJS) $(MOREOBJS) $(STATICOBJS)
+KDOBJS = kd_demo.$(OBJ) kd_play.$(OBJ) kd_keen.$(OBJ) kd_act1.$(OBJ) kd_act2.$(OBJ) $(IDENGOBJS) $(MOREOBJS)
+# $(STATICOBJS)
 #id_us_a.$(OBJ) id_sd_a.$(OBJ) id_sd_a.$(OBJ)
 
 #
@@ -103,7 +104,7 @@ KDOBJS = kd_demo$(OBJ) kd_play$(OBJ) kd_keen$(OBJ) kd_act1$(OBJ) kd_act2$(OBJ) $
 
 #.lib : .;$(DOSLIB_CPU)/dos86h;$(DOSLIB_DOS)/dos86h;$(DOSLIB_VGA)/dos86h;$(DOSLIB_8250)/dos86h
 
-.obj : .
+.obj : .;static/
 
 #
 #	Default make rules
@@ -127,12 +128,12 @@ KDOBJS = kd_demo$(OBJ) kd_play$(OBJ) kd_keen$(OBJ) kd_act1$(OBJ) kd_act2$(OBJ) $
 EXEC = &
 	kdreams.exe
 
-all: $(EXEC)
+all: $(STATICOBJS) $(EXEC)
 
 #
 # game executables
 #
-kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) #src/obj/signon.$(OBJ)
+kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) $(STATICOBJS)
 
 #
 # Test Executables!
@@ -149,6 +150,14 @@ kdreams.$(OBJ):	kdreams.c
 #
 # non executable objects libraries
 #
+$(STATICOBJS): .symbolic
+	@cd static
+!ifdef __LINUX__
+	@. ./make.sh
+!else
+	@make.bat
+!endif
+	@cd ..
 
 #kdass.lib: .symbolic
 #	@if exist src/KDASS.LIB	cp src/KDASS.LIB ./kdass.lib
@@ -168,7 +177,8 @@ id_us_a.$(OBJ):	id_us_a.c
 kd_act1.$(OBJ):	kd_act1.c
 kd_act2.$(OBJ):	kd_act2.c
 kd_play.$(OBJ):	kd_play.c
-kdass..$(OBJ):	kdass..c
+kd_demo.$(OBJ):	kd_demo.c
+kdass.$(OBJ):	kdass.c
 #id_exter.$(OBJ):	id_exter.c
 #id_vl_a.$(OBJ):	id_vl_a.asm
 
@@ -181,10 +191,10 @@ clean: .symbolic
 	@rm *.LIB
 	@rm *.EXE
 	#++@if exist src/obj/*.EXE	mv src/obj/*.EXE bcwolf.exe
-	@if exist *.obj $(REMOVECOMMAND) *.obj
+	@if exist *.OBJ $(REMOVECOMMAND) *.OBJ
 	#@wmake -h bomb
 !endif
-	#@if exist *.OBJ $(REMOVECOMMAND) *.OBJ
+	@for %f in ($(KDOBJS)) do @if exist %f $(REMOVECOMMAND) %f
 	@if exist *.LIB $(REMOVECOMMAND) *.LIB
 	@if exist *.lnk $(REMOVECOMMAND) *.lnk
 	@if exist *.LNK $(REMOVECOMMAND) *.LNK
@@ -205,7 +215,7 @@ bomb: .symbolic
 
 backupconfig: .symbolic
 	@$(COPYCOMMAND) .git$(DIRSEP)config git_con.fig
-	@$(COPYCOMMAND) .gitmodules git_modu.les
+#	@$(COPYCOMMAND) .gitmodules git_modu.les
 	@$(COPYCOMMAND) .gitignore git_igno.re
 
 comp: .symbolic
@@ -226,5 +236,5 @@ reinitlibs: .symbolic
 
 initlibs: .symbolic
 	@cp git_con.fig .git/config
-	@cp git_modu.les .gitmodules
+#	@cp git_modu.les .gitmodules
 	@cp git_igno.re .gitignore

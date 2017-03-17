@@ -166,27 +166,51 @@ void CAL_GetGrChunkLength (int chunk)
 
 boolean CA_FarRead (int handle, byte far *dest, long length)
 {
+	boolean flag=false;
 	if (length>0xffffl)
 		Quit ("CA_FarRead doesn't support 64K reads yet!");
 
-asm		push	ds
-asm		mov	bx,[handle]
-asm		mov	cx,[WORD PTR length]
-asm		mov	dx,[WORD PTR dest]
-asm		mov	ds,[WORD PTR dest+2]
-asm		mov	ah,0x3f				// READ w/handle
-asm		int	21h
-asm		pop	ds
-asm		jnc	good
-	errno = _AX;
-	return	false;
+	__asm {
+		push	ds
+		mov	bx,[handle]
+		mov	cx,[WORD PTR length]
+		mov	dx,[WORD PTR dest]
+		mov	ds,[WORD PTR dest+2]
+		mov	ah,0x3f				// READ w/handle
+		int	21h
+		pop	ds
+		jnc	good
+		mov	errno,ax
+		mov	flag,0
+		jmp End
+#ifdef __BORLANDC__
+	}
+#endif
 good:
-asm		cmp	ax,[WORD PTR length]
-asm		je	done
-	errno = EINVFMT;			// user manager knows this is bad read
-	return	false;
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		cmp	ax,[WORD PTR length]
+		je	done
+//		errno = EINVFMT;			// user manager knows this is bad read
+		mov	flag,0
+		jmp End
+#ifdef __BORLANDC__
+	}
+#endif
 done:
-	return	true;
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	flag,1
+#ifdef __BORLANDC__
+	}
+#endif
+End:
+#ifdef __WATCOMC__
+	}
+#endif
+	return flag;
 }
 
 
@@ -202,29 +226,113 @@ done:
 
 boolean CA_FarWrite (int handle, byte far *source, long length)
 {
+	boolean flag=false;
 	if (length>0xffffl)
 		Quit ("CA_FarWrite doesn't support 64K reads yet!");
 
-asm		push	ds
-asm		mov	bx,[handle]
-asm		mov	cx,[WORD PTR length]
-asm		mov	dx,[WORD PTR source]
-asm		mov	ds,[WORD PTR source+2]
-asm		mov	ah,0x40			// WRITE w/handle
-asm		int	21h
-asm		pop	ds
-asm		jnc	good
-	errno = _AX;
-	return	false;
+	__asm {
+		push	ds
+		mov	bx,[handle]
+		mov	cx,[WORD PTR length]
+		mov	dx,[WORD PTR source]
+		mov	ds,[WORD PTR source+2]
+		mov	ah,0x40			// WRITE w/handle
+		int	21h
+		pop	ds
+		jnc	good
+		mov	errno,ax
+		mov flag,0
+		jmp End
+#ifdef __BORLANDC__
+	}
+#endif
 good:
-asm		cmp	ax,[WORD PTR length]
-asm		je	done
-	errno = ENOMEM;				// user manager knows this is bad write
-	return	false;
-
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		cmp	ax,[WORD PTR length]
+		je	done
+//		errno = ENOMEM;				// user manager knows this is bad write
+		mov	flag,0
+		jmp End
+#ifdef __BORLANDC__
+	}
+#endif
 done:
-	return	true;
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	flag,1
+#ifdef __BORLANDC__
+	}
+#endif
+End:
+#ifdef __WATCOMC__
+	}
+#endif
+	return flag;
 }
+
+
+/*
+==========================
+=
+= CA_ReadFile
+=
+= Reads a file into an allready allocated buffer
+=
+==========================
+*/
+
+boolean CA_ReadFile (char *filename, memptr *ptr)
+{
+	int handle;
+	long size;
+
+	if ((handle = open(filename,O_RDONLY | O_BINARY, S_IREAD)) == -1)
+		return false;
+
+	size = filelength (handle);
+	if (!CA_FarRead (handle,*ptr,size))
+	{
+		close (handle);
+		return false;
+	}
+	close (handle);
+	return true;
+}
+
+
+/*
+==========================
+=
+= CA_WriteFile
+=
+= Writes a file from a memory buffer
+=
+==========================
+*/
+
+boolean CA_WriteFile (char *filename, void far *ptr, long length)
+{
+	int handle;
+	long size;
+
+	handle = open(filename,O_CREAT | O_BINARY | O_WRONLY,
+				S_IREAD | S_IWRITE | S_IFREG);
+
+	if (handle == -1)
+		return false;
+
+	if (!CA_FarWrite (handle,ptr,length))
+	{
+		close (handle);
+		return false;
+	}
+	close (handle);
+	return true;
+}
+
 
 
 /*
@@ -307,24 +415,24 @@ void CAL_OptimizeNodes (huffnode *table)
 */
 
 void CAL_HuffExpand (byte huge *source, byte huge *dest,
-  long length,huffnode *hufftable)
+	long length,huffnode *hufftable)
 {
-  unsigned bit,byte,node,code;
-  unsigned sourceseg,sourceoff,destseg,destoff,endoff;
-  huffnode *nodeon,*headptr;
+	unsigned bit,byte,node,code;
+	unsigned sourceseg,sourceoff,destseg,destoff,endoff;
+	huffnode *nodeon,*headptr;
 
-  headptr = hufftable+254;	// head node is allways node 254
+	headptr = hufftable+254;	// head node is allways node 254
 
-  source++;	// normalize
-  source--;
-  dest++;
-  dest--;
+	source++;	// normalize
+	source--;
+	dest++;
+	dest--;
 
-  sourceseg = FP_SEG(source);
-  sourceoff = FP_OFF(source);
-  destseg = FP_SEG(dest);
-  destoff = FP_OFF(dest);
-  endoff = destoff+length;
+	sourceseg = FP_SEG(source);
+	sourceoff = FP_OFF(source);
+	destseg = FP_SEG(dest);
+	destoff = FP_OFF(dest);
+	endoff = destoff+length;
 
 //
 // ds:si source
@@ -339,49 +447,76 @@ void CAL_HuffExpand (byte huge *source, byte huge *dest,
 // expand less than 64k of data
 //--------------------------
 
-asm mov	bx,[headptr]
+		__asm {
+			mov	bx,[word ptr headptr]
 
-asm	mov	si,[sourceoff]
-asm	mov	di,[destoff]
-asm	mov	es,[destseg]
-asm	mov	ds,[sourceseg]
-asm	mov	ax,[endoff]
+			mov	si,[sourceoff]
+			mov	di,[destoff]
+			mov	es,[destseg]
+			mov	ds,[sourceseg]
+			mov	ax,[endoff]
 
-asm	mov	ch,[si]				// load first byte
-asm	inc	si
-asm	mov	cl,1
-
+			mov	ch,[si]				// load first byte
+			inc	si
+			mov	cl,1
+#ifdef __BORLANDC__
+		}
+#endif
 expandshort:
-asm	test	ch,cl			// bit set?
-asm	jnz	bit1short
-asm	mov	dx,[ss:bx]			// take bit0 path from node
-asm	shl	cl,1				// advance to next bit position
-asm	jc	newbyteshort
-asm	jnc	sourceupshort
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			test	ch,cl			// bit set?
+			jnz	bit1short
+			mov	dx,[ss:bx]			// take bit0 path from node
+			shl	cl,1				// advance to next bit position
+			jc	newbyteshort
+			jnc	sourceupshort
+#ifdef __BORLANDC__
+		}
+#endif
 bit1short:
-asm	mov	dx,[ss:bx+2]		// take bit1 path
-asm	shl	cl,1				// advance to next bit position
-asm	jnc	sourceupshort
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			mov	dx,[ss:bx+2]		// take bit1 path
+			shl	cl,1				// advance to next bit position
+			jnc	sourceupshort
+#ifdef __BORLANDC__
+		}
+#endif
 newbyteshort:
-asm	mov	ch,[si]				// load next byte
-asm	inc	si
-asm	mov	cl,1				// back to first bit
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			mov	ch,[si]				// load next byte
+			inc	si
+			mov	cl,1				// back to first bit
+#ifdef __BORLANDC__
+		}
+#endif
 sourceupshort:
-asm	or	dh,dh				// if dx<256 its a byte, else move node
-asm	jz	storebyteshort
-asm	mov	bx,dx				// next node = (huffnode *)code
-asm	jmp	expandshort
-
+#ifdef __BORLANDC__
+	__asm {
+#endif
+			or	dh,dh				// if dx<256 its a byte, else move node
+			jz	storebyteshort
+			mov	bx,dx				// next node = (huffnode *)code
+			jmp	expandshort
+#ifdef __BORLANDC__
+		}
+#endif
 storebyteshort:
-asm	mov	[es:di],dl
-asm	inc	di					// write a decopmpressed byte out
-asm	mov	bx,[headptr]		// back to the head node for next bit
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			mov	[es:di],dl
+			inc	di					// write a decopmpressed byte out
+			mov	bx,[word ptr headptr]		// back to the head node for next bit
 
-asm	cmp	di,ax				// done?
-asm	jne	expandshort
+			cmp	di,ax				// done?
+			jne	expandshort
+		}
 	}
 	else
 	{
@@ -390,67 +525,107 @@ asm	jne	expandshort
 // expand more than 64k of data
 //--------------------------
 
-  length--;
+	length--;
 
-asm mov	bx,[headptr]
-asm	mov	cl,1
+		__asm {
+			mov	bx,[word ptr headptr]
+			mov	cl,1
 
-asm	mov	si,[sourceoff]
-asm	mov	di,[destoff]
-asm	mov	es,[destseg]
-asm	mov	ds,[sourceseg]
+			mov	si,[sourceoff]
+			mov	di,[destoff]
+			mov	es,[destseg]
+			mov	ds,[sourceseg]
 
-asm	lodsb			// load first byte
-
+			lodsb			// load first byte
+#ifdef __BORLANDC__
+		}
+#endif
 expand:
-asm	test	al,cl		// bit set?
-asm	jnz	bit1
-asm	mov	dx,[ss:bx]	// take bit0 path from node
-asm	jmp	gotcode
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			test	al,cl		// bit set?
+			jnz	bit1
+			mov	dx,[ss:bx]	// take bit0 path from node
+			jmp	gotcode
+#ifdef __BORLANDC__
+		}
+#endif
 bit1:
-asm	mov	dx,[ss:bx+2]	// take bit1 path
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			mov	dx,[ss:bx+2]	// take bit1 path
+#ifdef __BORLANDC__
+		}
+#endif
 gotcode:
-asm	shl	cl,1		// advance to next bit position
-asm	jnc	sourceup
-asm	lodsb
-asm	cmp	si,0x10		// normalize ds:si
-asm  	jb	sinorm
-asm	mov	cx,ds
-asm	inc	cx
-asm	mov	ds,cx
-asm	xor	si,si
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			shl	cl,1		// advance to next bit position
+			jnc	sourceup
+			lodsb
+			cmp	si,0x10		// normalize ds:si
+			jb	sinorm
+			mov	cx,ds
+			inc	cx
+			mov	ds,cx
+			xor	si,si
+#ifdef __BORLANDC__
+		}
+#endif
 sinorm:
-asm	mov	cl,1		// back to first bit
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			mov	cl,1		// back to first bit
+#ifdef __BORLANDC__
+		}
+#endif
 sourceup:
-asm	or	dh,dh		// if dx<256 its a byte, else move node
-asm	jz	storebyte
-asm	mov	bx,dx		// next node = (huffnode *)code
-asm	jmp	expand
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			or	dh,dh		// if dx<256 its a byte, else move node
+			jz	storebyte
+			mov	bx,dx		// next node = (huffnode *)code
+			jmp	expand
+#ifdef __BORLANDC__
+		}
+#endif
 storebyte:
-asm	mov	[es:di],dl
-asm	inc	di		// write a decopmpressed byte out
-asm	mov	bx,[headptr]	// back to the head node for next bit
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			mov	[es:di],dl
+			inc	di		// write a decopmpressed byte out
+			mov	bx,[word ptr headptr]	// back to the head node for next bit
 
-asm	cmp	di,0x10		// normalize es:di
-asm  	jb	dinorm
-asm	mov	dx,es
-asm	inc	dx
-asm	mov	es,dx
-asm	xor	di,di
+			cmp	di,0x10		// normalize es:di
+			jb	dinorm
+			mov	dx,es
+			inc	dx
+			mov	es,dx
+			xor	di,di
+#ifdef __BORLANDC__
+		}
+#endif
 dinorm:
-
-asm	sub	[WORD PTR ss:length],1
-asm	jnc	expand
-asm  	dec	[WORD PTR ss:length+2]
-asm	jns	expand		// when length = ffff ffff, done
-
+#ifdef __BORLANDC__
+		__asm {
+#endif
+			sub	[WORD PTR ss:length],1
+			jnc	expand
+			dec	[WORD PTR ss:length+2]
+			jns	expand		// when length = ffff ffff, done
+		}
 	}
 
-asm	mov	ax,ss
-asm	mov	ds,ax
+	__asm {
+		mov	ax,ss
+		mov	ds,ax
+	}
 
 }
 
@@ -516,7 +691,7 @@ long CA_RLEWCompress (unsigned huge *source, long length, unsigned huge *dest,
 ======================
 =
 = CA_RLEWexpand
-= length is COMPRESSED length
+= length is EXPANDED length
 =
 ======================
 */
@@ -524,7 +699,7 @@ long CA_RLEWCompress (unsigned huge *source, long length, unsigned huge *dest,
 void CA_RLEWexpand (unsigned huge *source, unsigned huge *dest,long length,
   unsigned rlewtag)
 {
-  unsigned value,count,i;
+//  unsigned value,count,i;
   unsigned huge *end;
   unsigned sourceseg,sourceoff,destseg,destoff,endseg,endoff;
 
@@ -572,60 +747,87 @@ void CA_RLEWexpand (unsigned huge *source, unsigned huge *dest,long length,
 // NOTE: A repeat count that produces 0xfff0 bytes can blow this!
 //
 
-asm	mov	bx,rlewtag
-asm	mov	si,sourceoff
-asm	mov	di,destoff
-asm	mov	es,destseg
-asm	mov	ds,sourceseg
-
+	__asm {
+		mov	bx,rlewtag
+		mov	si,sourceoff
+		mov	di,destoff
+		mov	es,destseg
+		mov	ds,sourceseg
+#ifdef __BORLANDC__
+	}
+#endif
 expand:
-asm	lodsw
-asm	cmp	ax,bx
-asm	je	repeat
-asm	stosw
-asm	jmp	next
-
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		lodsw
+		cmp	ax,bx
+		je	repeat
+		stosw
+		jmp	next
+#ifdef __BORLANDC__
+	}
+#endif
 repeat:
-asm	lodsw
-asm	mov	cx,ax		// repeat count
-asm	lodsw			// repeat value
-asm	rep stosw
-
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		lodsw
+		mov	cx,ax		// repeat count
+		lodsw			// repeat value
+		rep stosw
+#ifdef __BORLANDC__
+	}
+#endif
 next:
-
-asm	cmp	si,0x10		// normalize ds:si
-asm  	jb	sinorm
-asm	mov	ax,si
-asm	shr	ax,1
-asm	shr	ax,1
-asm	shr	ax,1
-asm	shr	ax,1
-asm	mov	dx,ds
-asm	add	dx,ax
-asm	mov	ds,dx
-asm	and	si,0xf
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		cmp	si,0x10		// normalize ds:si
+		jb	sinorm
+		mov	ax,si
+		shr	ax,1
+		shr	ax,1
+		shr	ax,1
+		shr	ax,1
+		mov	dx,ds
+		add	dx,ax
+		mov	ds,dx
+		and	si,0xf
+#ifdef __BORLANDC__
+	}
+#endif
 sinorm:
-asm	cmp	di,0x10		// normalize es:di
-asm  	jb	dinorm
-asm	mov	ax,di
-asm	shr	ax,1
-asm	shr	ax,1
-asm	shr	ax,1
-asm	shr	ax,1
-asm	mov	dx,es
-asm	add	dx,ax
-asm	mov	es,dx
-asm	and	di,0xf
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		cmp	di,0x10		// normalize es:di
+		jb	dinorm
+		mov	ax,di
+		shr	ax,1
+		shr	ax,1
+		shr	ax,1
+		shr	ax,1
+		mov	dx,es
+		add	dx,ax
+		mov	es,dx
+		and	di,0xf
+#ifdef __BORLANDC__
+	}
+#endif
 dinorm:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		cmp     di,ss:endoff
+		jne	expand
+		mov	ax,es
+		cmp	ax,ss:endseg
+		jb	expand
 
-asm	cmp     di,ss:endoff
-asm	jne	expand
-asm	mov	ax,es
-asm	cmp	ax,ss:endseg
-asm	jb	expand
-
-asm	mov	ax,ss
-asm	mov	ds,ax
+		mov	ax,ss
+		mov	ds,ax
+	}
 
 }
 
@@ -656,11 +858,11 @@ void CAL_SetupGrFile (void)
 
 #ifdef GRHEADERLINKED
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 	grhuffman = (huffnode *)&EGAdict;
 	grstarts = (long _seg *)FP_SEG(&EGAhead);
 #endif
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 	grhuffman = (huffnode *)&CGAdict;
 	grstarts = (long _seg *)FP_SEG(&CGAhead);
 #endif
@@ -709,32 +911,32 @@ void CAL_SetupGrFile (void)
 //
 // load the pic and sprite headers into the arrays in the data segment
 //
-#if NUMPICS>0
-	MM_GetPtr(&(memptr)pictable,NUMPICS*sizeof(pictabletype));
-	CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
-	MM_GetPtr(&compseg,chunkcomplen);
-	CA_FarRead (grhandle,compseg,chunkcomplen);
-	CAL_HuffExpand (compseg, (byte huge *)pictable,NUMPICS*sizeof(pictabletype),grhuffman);
-	MM_FreePtr(&compseg);
-#endif
+//	if(NUMPICS>0){
+		MM_GetPtr(&(memptr)pictable,NUMPICS*sizeof(pictabletype));
+		CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
+		MM_GetPtr(&compseg,chunkcomplen);
+		CA_FarRead (grhandle,compseg,chunkcomplen);
+		CAL_HuffExpand (compseg, (byte huge *)pictable,NUMPICS*sizeof(pictabletype),grhuffman);
+		MM_FreePtr(&compseg);
+//	}
 
-#if NUMPICM>0
-	MM_GetPtr(&(memptr)picmtable,NUMPICM*sizeof(pictabletype));
-	CAL_GetGrChunkLength(STRUCTPICM);		// position file pointer
-	MM_GetPtr(&compseg,chunkcomplen);
-	CA_FarRead (grhandle,compseg,chunkcomplen);
-	CAL_HuffExpand (compseg, (byte huge *)picmtable,NUMPICS*sizeof(pictabletype),grhuffman);
-	MM_FreePtr(&compseg);
-#endif
+//	if(NUMPICM>0){
+		MM_GetPtr(&(memptr)picmtable,NUMPICM*sizeof(pictabletype));
+		CAL_GetGrChunkLength(STRUCTPICM);		// position file pointer
+		MM_GetPtr(&compseg,chunkcomplen);
+		CA_FarRead (grhandle,compseg,chunkcomplen);
+		CAL_HuffExpand (compseg, (byte huge *)picmtable,NUMPICS*sizeof(pictabletype),grhuffman);
+		MM_FreePtr(&compseg);
+//	}
 
-#if NUMSPRITES>0
-	MM_GetPtr(&(memptr)spritetable,NUMSPRITES*sizeof(spritetabletype));
-	CAL_GetGrChunkLength(STRUCTSPRITE);	// position file pointer
-	MM_GetPtr(&compseg,chunkcomplen);
-	CA_FarRead (grhandle,compseg,chunkcomplen);
-	CAL_HuffExpand (compseg, (byte huge *)spritetable,NUMSPRITES*sizeof(spritetabletype),grhuffman);
-	MM_FreePtr(&compseg);
-#endif
+//	if(NUMSPRITES>0){
+		MM_GetPtr(&(memptr)spritetable,NUMSPRITES*sizeof(spritetabletype));
+		CAL_GetGrChunkLength(STRUCTSPRITE);	// position file pointer
+		MM_GetPtr(&compseg,chunkcomplen);
+		CA_FarRead (grhandle,compseg,chunkcomplen);
+		CAL_HuffExpand (compseg, (byte huge *)spritetable,NUMSPRITES*sizeof(spritetabletype),grhuffman);
+		MM_FreePtr(&compseg);
+//	}
 
 }
 
@@ -1012,7 +1214,7 @@ cachein:
 
 //===========================================================================
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 
 /*
 ======================
@@ -1033,82 +1235,108 @@ void CAL_ShiftSprite (unsigned segment,unsigned source,unsigned dest,
 	sheight = height;		// because we are going to reassign bp
 	swidth = width;
 
-asm	mov	ax,[segment]
-asm	mov	ds,ax		// source and dest are in same segment, and all local
+	__asm {
+		mov	ax,[segment]
+		mov	ds,ax		// source and dest are in same segment, and all local
 
-asm	mov	bx,[source]
-asm	mov	di,[dest]
+		mov	bx,[source]
+		mov	di,[dest]
 
-asm	mov	bp,[pixshift]
-asm	shl	bp,1
-asm	mov	bp,[shifttabletable+bp]	// bp holds pointer to shift table
+		mov	bp,[pixshift]
+		shl	bp,1
+		mov	bp,[shifttabletable+bp]	// bp holds pointer to shift table
 
 //
 // table shift the mask
 //
-asm	mov	dx,[ss:sheight]
+		mov	dx,[ss:sheight]
+#ifdef __BORLANDC__
+	}
+#endif
 
 domaskrow:
 
-asm	mov	BYTE PTR [di],255	// 0xff first byte
-asm	mov	cx,ss:[swidth]
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	BYTE PTR [di],255	// 0xff first byte
+		mov	cx,ss:[swidth]
+#ifdef __BORLANDC__
+	}
+#endif
 
 domaskbyte:
 
-asm	mov	al,[bx]				// source
-asm	not	al
-asm	inc	bx					// next source byte
-asm	xor	ah,ah
-asm	shl	ax,1
-asm	mov	si,ax
-asm	mov	ax,[bp+si]			// table shift into two bytes
-asm	not	ax
-asm	and	[di],al				// and with first byte
-asm	inc	di
-asm	mov	[di],ah				// replace next byte
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	al,[bx]				// source
+		not	al
+		inc	bx					// next source byte
+		xor	ah,ah
+		shl	ax,1
+		mov	si,ax
+		mov	ax,[bp+si]			// table shift into two bytes
+		not	ax
+		and	[di],al				// and with first byte
+		inc	di
+		mov	[di],ah				// replace next byte
 
-asm	loop	domaskbyte
+		loop	domaskbyte
 
-asm	inc	di					// the last shifted byte has 1s in it
-asm	dec	dx
-asm	jnz	domaskrow
+		inc	di					// the last shifted byte has 1s in it
+		dec	dx
+		jnz	domaskrow
 
 //
 // table shift the data
 //
-asm	mov	dx,ss:[sheight]
-asm	shl	dx,1
-asm	shl	dx,1				// four planes of data
+		mov	dx,ss:[sheight]
+		shl	dx,1
+		shl	dx,1				// four planes of data
+#ifdef __BORLANDC__
+	}
+#endif
 
 dodatarow:
 
-asm	mov	BYTE PTR [di],0		// 0 first byte
-asm	mov	cx,ss:[swidth]
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	BYTE PTR [di],0		// 0 first byte
+		mov	cx,ss:[swidth]
+#ifdef __BORLANDC__
+	}
+#endif
 
 dodatabyte:
 
-asm	mov	al,[bx]				// source
-asm	inc	bx					// next source byte
-asm	xor	ah,ah
-asm	shl	ax,1
-asm	mov	si,ax
-asm	mov	ax,[bp+si]			// table shift into two bytes
-asm	or	[di],al				// or with first byte
-asm	inc	di
-asm	mov	[di],ah				// replace next byte
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	al,[bx]				// source
+		inc	bx					// next source byte
+		xor	ah,ah
+		shl	ax,1
+		mov	si,ax
+		mov	ax,[bp+si]			// table shift into two bytes
+		or	[di],al				// or with first byte
+		inc	di
+		mov	[di],ah				// replace next byte
 
-asm	loop	dodatabyte
+		loop	dodatabyte
 
-asm	inc	di					// the last shifted byte has 0s in it
-asm	dec	dx
-asm	jnz	dodatarow
+		inc	di					// the last shifted byte has 0s in it
+		dec	dx
+		jnz	dodatarow
 
 //
 // done
 //
 
-asm	mov	ax,ss				// restore data segment
-asm	mov	ds,ax
+		mov	ax,ss				// restore data segment
+		mov	ds,ax
+	}
 
 }
 
@@ -1134,7 +1362,7 @@ void CAL_CacheSprite (int chunk, char far *compressed)
 	spritetabletype far *spr;
 	spritetype _seg *dest;
 
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 //
 // CGA has no pel panning, so shifts are never needed
 //
@@ -1154,7 +1382,7 @@ void CAL_CacheSprite (int chunk, char far *compressed)
 #endif
 
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 
 //
 // calculate sizes
@@ -1267,12 +1495,12 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 	// expanded sizes of tile8/16/32 are implicit
 	//
 
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 #define BLOCK		32
 #define MASKBLOCK	40
 #endif
 
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 #define BLOCK		16
 #define MASKBLOCK	32
 #endif
@@ -1468,9 +1696,10 @@ void CA_CacheMap (int mapnum)
 		lseek(maphandle,pos,SEEK_SET);
 
 #ifdef MAPHEADERLINKED
-#if BUFFERSIZE < sizeof(maptype)
-The general buffer size is too small!
-#endif
+//#if BUFFERSIZE < sizeof(maptype)
+//		if(BUFFERSIZE < sizeof(maptype))
+//			printf("The general buffer size is too small!");
+//#endif
 		//
 		// load in, then unhuffman to the destination
 		//
@@ -1751,10 +1980,10 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 				if (xh - lastx > BARSTEP)
 				{
 					for (x=lastx;x<=xh;x++)
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 						VWB_Vlin (thy,thy+13,x,14);
 #endif
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 						VWB_Vlin (thy,thy+13,x,SECONDCOLOR);
 #endif
 					lastx = xh;
@@ -1834,10 +2063,10 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 		{
 			xh = thx + NUMBARS;
 			for (x=lastx;x<=xh;x++)
-#if GRMODE == EGAGR
+#ifdef GRMODEEGA
 				VWB_Vlin (thy,thy+13,x,14);
 #endif
-#if GRMODE == CGAGR
+#ifdef GRMODECGA
 				VWB_Vlin (thy,thy+13,x,SECONDCOLOR);
 #endif
 			VW_UpdateScreen();

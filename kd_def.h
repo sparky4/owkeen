@@ -230,6 +230,8 @@ void	CalcInactivate (void);
 void 	InitObjArray (void);
 void 	GetNewObj (boolean usedummy);
 void	RemoveObj (objtype *gone);
+boolean	xloop(boolean nothflag);
+void yloop(void);
 void 	ScanInfoPlane (void);
 void 	PatchWorldMap (void);
 void 	MarkTileGraphics (void);

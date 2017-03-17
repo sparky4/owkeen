@@ -553,6 +553,41 @@ void near HandleInfo (void)
 		new->active = false;
 }
 
+boolean xloop(boolean nothflag)
+{
+	__asm {
+		mov	ax,[es:si]
+		or	ax,ax
+		jz	nothing
+		mov	[maptile],ax
+		jmp	Endx
+#ifdef __BORLANDC__
+	}
+#endif
+nothing:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	[nothflag],1
+#ifdef __BORLANDC__
+	}
+#endif
+Endx:
+#ifdef __WATCOMC__
+	}
+#endif
+	return nothflag;
+}
+
+void yloop(void)
+{
+	__asm {
+		mov	[mapx],0
+		mov	ax,[mapwidth]
+		mov	[mapxcount],ax
+	}
+}
+
 /*
 ==========================
 =
@@ -568,11 +603,13 @@ void ScanInfoPlane (void)
 	unsigned	x,y,i,j;
 	int			tile;
 	unsigned	far	*start;
+	boolean	nothflag,xloopflag,yloopflag;
 
 	InitObjArray();			// start spawning things with a clean slate
 
 	memset (lumpneeded,0,sizeof(lumpneeded));
 
+	nothflag=xloopflag=yloopflag=false;
 #if 0
 	start = mapsegs[2];
 	for (y=0;y<mapheight;y++)
@@ -588,7 +625,7 @@ void ScanInfoPlane (void)
 // This doesn't really need to be in asm.  I thought it was a bottleneck,
 // but I was wrong...
 //
-
+/*
 	asm	mov	es,[WORD PTR mapsegs+4]
 	asm	xor	si,si
 	asm	mov	[mapy],0
@@ -613,6 +650,67 @@ nothing:
 	asm	inc	[mapy]
 	asm	dec	[mapycount]
 	asm	jnz	yloop
+*/
+	__asm {
+		mov	es,[WORD PTR mapsegs+4]
+		xor	si,si
+		mov	[mapy],0
+		mov	ax,[mapheight]
+		mov	[mapycount],ax
+	}
+yloop1:
+	yloop();
+xloop1:
+	nothflag = xloop(nothflag);
+	if(!nothflag)
+	{
+		HandleInfo ();						// si is saved
+		asm	mov	es,[WORD PTR mapsegs+4]
+	}
+	__asm {
+		inc	[mapx]
+		add	si,2
+		dec	[mapxcount]
+		jnz	xloop2
+		inc	[mapy]
+		dec	[mapycount]
+		jnz	yloop2
+
+		jmp End2
+#ifdef __BORLANDC__
+	}
+#endif
+xloop2:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	[xloopflag],1
+#ifdef __BORLANDC__
+	}
+#endif
+yloop2:
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		mov	[yloopflag],1
+#ifdef __BORLANDC__
+	}
+#endif
+End2:
+#ifdef __WATCOMC__
+	}
+#endif
+
+	if(xloopflag)
+	{
+		xloopflag = false;
+		goto xloop1;
+	}
+	if(yloopflag)
+	{
+		yloopflag = false;
+		goto yloop1;
+	}
 
 	for (i=0;i<NUMLUMPS;i++)
 		if (lumpneeded[i])
@@ -1653,7 +1751,7 @@ void PlayLoop (void)
 
 void GameFinale (void)
 {
-struct date d;
+//struct date d;
 
 	VW_FixRefreshBuffer ();
 

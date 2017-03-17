@@ -57,7 +57,7 @@ EMS / XMS unmanaged routines
 =============================================================================
 */
 
-#define EMSINT		0x67
+//#define EMSINT		0x67
 
 #define LOCKBIT		0x80	// if set in attributes, block cannot be moved
 #define PURGEBITS	3		// 0-3 level, 0= unpurgable, 3= purge first
@@ -122,7 +122,7 @@ boolean 	MML_CheckForXMS (void);
 void 		MML_ShutdownXMS (void);
 
 //==========================================================================
-
+#ifndef __ID_PM__
 /*
 ======================
 =
@@ -235,7 +235,7 @@ void MML_ShutdownXMS (void)
 {
 
 }
-
+#endif
 //==========================================================================
 
 /*
@@ -317,6 +317,7 @@ void MM_Startup (void)
 	mmrover = mmnew;
 
 
+#ifndef __ID_PM__
 //
 // detect EMS and allocate 64K at page frame
 //
@@ -341,6 +342,7 @@ void MM_Startup (void)
 	{
 		mminfo.XMSmem = 0;
 	}
+#endif
 
 
 //
@@ -377,13 +379,15 @@ void MM_Startup (void)
 
 void MM_Shutdown (void)
 {
-  if (!mmstarted)
-	return;
+	if (!mmstarted)
+		return;
 
-  farfree (farheap);
-  free (nearheap);
-  MML_ShutdownEMS ();
-  MML_ShutdownXMS ();
+	farfree (farheap);
+	free (nearheap);
+#ifndef __ID_PM__
+	MML_ShutdownEMS ();
+	MML_ShutdownXMS ();
+#endif
 }
 
 //==========================================================================
