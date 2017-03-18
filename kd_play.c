@@ -810,7 +810,7 @@ void 	SetupGameLevel (boolean loadnow)
 //
 // let the refresh manager set up some variables
 //
-	RF_NewMap ();
+//	RF_NewMap ();
 
 //
 // decide which graphics are needed and spawn actors
@@ -820,8 +820,8 @@ void 	SetupGameLevel (boolean loadnow)
 	if (!mapon)
 		PatchWorldMap ();
 
-	if (mapon!=20)			// map 20 is the title screen
-		ScanInfoPlane ();
+//	if (mapon!=20)			// map 20 is the title screen
+//		ScanInfoPlane ();
 	RF_MarkTileGraphics ();
 
 //
@@ -840,7 +840,7 @@ void 	SetupGameLevel (boolean loadnow)
 		CA_CacheMarks (levelnames[mapon], 0);
 	}
 
-#if 0
+//#if 0
 	VW_FixRefreshBuffer ();
 	US_CenterWindow (20,8);
 	US_Print ("\n\n\nObject count:");
@@ -848,7 +848,7 @@ void 	SetupGameLevel (boolean loadnow)
 	US_Print (str);
 	VW_UpdateScreen ();
 	IN_Ack ();
-#endif
+//#endif
 
 	if (mapon!=20 && loadnow)			// map 20 is the title screen
 	{

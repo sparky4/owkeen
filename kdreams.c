@@ -530,8 +530,8 @@ void main (void)
 
 	InitGame();
 
-TestSprites();
-DebugMemory();
+//TestSprites();
+//DebugMemory();
 
 	DemoLoop();					// DemoLoop calls Quit when everything is done
 	Quit("Demo loop exited???");
