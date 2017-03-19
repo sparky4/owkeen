@@ -355,6 +355,8 @@ void RF_NewMap (void)
 //
 // make a lookup table for the maps left edge
 //
+	if (mapheight > MAXMAPHEIGHT)
+		Quit ("RF_NewMap: Map too tall!");
 	spot = 0;
 	for (i=0;i<mapheight;i++)
 	{
@@ -369,7 +371,6 @@ void RF_NewMap (void)
 	for (y=0;y<PORTTILESHIGH;y++)
 		for (x=0;x<UPDATEWIDE;x++)
 			*table++ = mapbwidthtable[y]+x*2;
-
 
 //
 // the y max value clips off the bottom half of a tile so a map that is

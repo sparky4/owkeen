@@ -810,7 +810,7 @@ void 	SetupGameLevel (boolean loadnow)
 //
 // let the refresh manager set up some variables
 //
-//	RF_NewMap ();
+	RF_NewMap ();
 
 //
 // decide which graphics are needed and spawn actors

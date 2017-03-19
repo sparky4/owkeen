@@ -2,6 +2,6 @@
 #define __KDASS_H__
 #include "id_heads.h"
 
-//US_RndT
+int US_RndT();
 
 #endif
