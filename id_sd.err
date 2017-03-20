@@ -1,0 +1,7 @@
+id_sd.c(331): Warning! W120: lvalue cast is not standard C
+id_sd.c(693): Warning! W120: lvalue cast is not standard C
+id_sd.c(757): Warning! W120: lvalue cast is not standard C
+id_sd.c(1053): Warning! W120: lvalue cast is not standard C
+id_sd.c(1126): Warning! W120: lvalue cast is not standard C
+id_sd.c(1885): Warning! W119: Address of static function 'SDL_SBService' has been taken
+id_sd.c(1885): Warning! W119: Address of static function 'SDL_t0Service' has been taken

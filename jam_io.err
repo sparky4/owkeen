@@ -1,0 +1,6 @@
+jam_io.c(69): Warning! W120: lvalue cast is not standard C
+jam_io.c(99): Warning! W112: Parameter 1: Pointer truncated
+jam_io.c(99): Note! I2003: source conversion type is 'struct __iobuf __far *'
+jam_io.c(99): Note! I2004: target conversion type is 'struct __iobuf *'
+jam_io.c(99): Note! I2002: 'fgetc' defined in: /dos/fdos/watcom2/h/stdio.h(318)
+jam_io.c(112): Warning! W120: lvalue cast is not standard C

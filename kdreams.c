@@ -32,7 +32,7 @@
 
 #include "KD_DEF.H"
 #ifdef __WATCOMC__
-#include "kdass.h"
+//#include "kdass.h"
 #endif
 #pragma hdrstop
 

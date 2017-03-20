@@ -86,10 +86,14 @@ LIBFLAGS=$(WLIBQ) -b -n
 STATICOBJS = context.obj gametext.obj kdradict.obj kdrahead.obj kdrcdict.obj kdrchead.obj kdredict.obj kdrehead.obj kdrmdict.obj kdrmhead.obj story.obj
 IDENGOBJS = id_mm.$(OBJ) id_ca.$(OBJ) id_vw.$(OBJ) id_rf.$(OBJ) id_in.$(OBJ) id_sd.$(OBJ) id_us.$(OBJ)
 #id_pm.$(OBJ)
-MOREOBJS = gelib.$(OBJ) jam_io.$(OBJ) soft.$(OBJ) lzhuf.$(OBJ) kdass.$(OBJ)
+MOREOBJS = gelib.$(OBJ) jam_io.$(OBJ) soft.$(OBJ) lzhuf.$(OBJ)
+# kdass.$(OBJ)
 KDOBJS = kd_demo.$(OBJ) kd_play.$(OBJ) kd_keen.$(OBJ) kd_act1.$(OBJ) kd_act2.$(OBJ) $(IDENGOBJS) $(MOREOBJS)
 # $(STATICOBJS)
-#id_us_a.$(OBJ) id_sd_a.$(OBJ) id_sd_a.$(OBJ)
+ASSHEAD=id_rf.h id_us.h id_vw.h
+ASSOBJS=id_rf_a.$(OBJ) id_us_a.$(OBJ) id_vw_a.$(OBJ)
+#FRESHASS=ID_RF_A.OBJ ID_US_A.OBJ ID_VW_A.OBJ
+
 
 #
 # libraries
@@ -100,9 +104,9 @@ KDOBJS = kd_demo.$(OBJ) kd_play.$(OBJ) kd_keen.$(OBJ) kd_act1.$(OBJ) kd_act2.$(O
 #
 .c : .#$(SRC)
 
-#.asm : $(SRC)
+.asm : .#$(SRC)
 
-#.lib : .;$(DOSLIB_CPU)/dos86h;$(DOSLIB_DOS)/dos86h;$(DOSLIB_VGA)/dos86h;$(DOSLIB_8250)/dos86h
+.lib : .#;$(DOSLIB_CPU)/dos86h;$(DOSLIB_DOS)/dos86h;$(DOSLIB_VGA)/dos86h;$(DOSLIB_8250)/dos86h
 
 .obj : .;static/
 
@@ -118,9 +122,11 @@ KDOBJS = kd_demo.$(OBJ) kd_play.$(OBJ) kd_keen.$(OBJ) kd_act1.$(OBJ) kd_act2.$(O
 #CFLAGS is neccessary here
 .obj.exe :
 	*wcl $(LFLAGS) $(extra_$^&_exe_opts)-fe=$@ $<
+	#*wlink name $@ form dos file { $(extra_$^&_exe_opts) $< } libp /dos/fdos/watcom2/h lib { $(ASSOBJS) }
 
-.obj.lib :
-	*wlib $(LIBFLAGS) $(extra_$^&_lib_opts) $@ $<
+LIBMAKERULE=*wlib $(LIBFLAGS) $(extra_$^&_lib_opts)$@ $<
+.$(OBJ).lib :
+	$(LIBMAKERULE)
 
 #
 # List of executables to build
@@ -133,7 +139,7 @@ all: $(STATICOBJS) $(EXEC)
 #
 # game executables
 #
-kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) $(STATICOBJS)
+kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) $(ASSOBJS) $(STATICOBJS)
 
 #
 # Test Executables!
@@ -159,27 +165,41 @@ $(STATICOBJS): .symbolic
 !endif
 	@cd ..
 
-#kdass.lib: .symbolic
+#kdass.lib: $(ASSHEAD) $(ASSOBJS) ++KDREAMS.SYM
+#	*wlib $(LIBFLAGS) $(ASSOBJS) ++KDREAMS.SYM
 #	@if exist src/KDASS.LIB	cp src/KDASS.LIB ./kdass.lib
+
+kdass: .symbolic
+	@if exist ID_RF_A.OBJ $(COPYCOMMAND) ID_RF_A.OBJ id_rf_a.oob
+	@if exist ID_US_A.OBJ $(COPYCOMMAND) ID_US_A.OBJ id_us_a.oob
+	@if exist ID_VW_A.OBJ $(COPYCOMMAND) ID_VW_A.OBJ id_vw_a.oob
+
+$(ASSOBJS): $(ASSHEAD)
+	#@for %f in ($(ASSOBJS)) do @if exist %f $(REMOVECOMMAND) %f
+	@if exist id_rf_a.oob $(COPYCOMMAND) id_rf_a.oob id_rf_a.$(OBJ)
+	@if exist id_us_a.oob $(COPYCOMMAND) id_us_a.oob id_us_a.$(OBJ)
+	@if exist id_vw_a.oob $(COPYCOMMAND) id_vw_a.oob id_vw_a.$(OBJ)
+	#@if exist *.oob $(REMOVECOMMAND) *.oob
 
 #gfx.lib: $(GFXLIBOBJS)
 #	*wlib $(LIBFLAGS) $(extra_$^&_lib_opts) $@ $<
 
 id_pm.$(OBJ):	id_pm.c
+id_rf.$(OBJ):	id_rf.c		$(ASSOBJS)
 id_mm.$(OBJ):	id_mm.c
 id_ca.$(OBJ):	id_ca.c
-id_vw.$(OBJ):	id_vw.c
+id_vw.$(OBJ):	id_vw.c	$(ASSOBJS)
 id_in.$(OBJ):	id_in.c
 id_sd.$(OBJ):	id_sd.c
-id_sd_a.$(OBJ):	id_sd_a.c
-id_us_1.$(OBJ):	id_us_1.c
-id_us_a.$(OBJ):	id_us_a.c
+#id_sd_a.$(OBJ):	id_sd_a.c
+id_us_1.$(OBJ):	id_us_1.c	$(ASSOBJS)
+#id_us_a.$(OBJ):	id_us_a.c
 kd_act1.$(OBJ):	kd_act1.c
 kd_act2.$(OBJ):	kd_act2.c
 kd_play.$(OBJ):	kd_play.c
 kd_demo.$(OBJ):	kd_demo.c
 lzhuf.$(OBJ):	lzhuf.c
-kdass.$(OBJ):	kdass.c
+#kdass.$(OBJ):	kdass.c
 #id_exter.$(OBJ):	id_exter.c
 #id_vl_a.$(OBJ):	id_vl_a.asm
 
@@ -192,6 +212,7 @@ clean: .symbolic
 	@rm *.LIB
 	@rm *.EXE
 	#++@if exist src/obj/*.EXE	mv src/obj/*.EXE bcwolf.exe
+	@wmake -h kdass
 	@if exist *.OBJ $(REMOVECOMMAND) *.OBJ
 	#@wmake -h bomb
 !endif
@@ -205,6 +226,7 @@ clean: .symbolic
 	@if exist *.mah $(REMOVECOMMAND) *.mah
 	@if exist *.MAH $(REMOVECOMMAND) *.MAH
 	@if exist *.err $(REMOVECOMMAND) *.err
+	#*wlib -n -b kdass.lib
 
 bomb: .symbolic
 	#@wmake -h clean
