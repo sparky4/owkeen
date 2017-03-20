@@ -115,7 +115,7 @@ USES	SI,DI
 
 	or	bx,bx
 	jz	@@singletile
-	jmp	@@maskeddraw			;draw both together
+	jmp	@@maskeddraw1			;draw both together
 
 ;=============
 ;
@@ -148,7 +148,7 @@ ENDM
 ; Interupts are disabled and the stack segment is reassigned
 ;
 ;=========
-@@maskeddraw:
+@@maskeddraw1:
 	cli							; don't allow ints when SS is set
 	shl	bx,1
 	mov	ss,[grsegs+STARTTILE16M*2+bx]
@@ -243,7 +243,7 @@ USES	SI,DI
 
 	or	bx,bx
 	jz	@@singletile
-	jmp	@@maskeddraw			;draw both together
+	jmp	maskeddraw			;draw both together
 
 ;=========
 ;
@@ -339,7 +339,7 @@ ENDM
 ; Interupts are disabled and the stack segment is reassigned
 ;
 ;=========
-@@maskeddraw:
+maskeddraw:
 	cli							; don't allow ints when SS is set
 	shl	bx,1
 	mov	ss,[grsegs+STARTTILE16M*2+bx]
@@ -370,7 +370,7 @@ ENDM
 	jmp	@@planeloopm
 
 @@done:
-	mov	ax,@DATA
+	mov	ax,_DATA
 	mov	ss,ax
 	sti
 	mov	ds,ax
@@ -457,7 +457,7 @@ USES	SI,DI,BP
 
 	cmp	[BYTE di],al
 	jne	@@singletile
-	jmp	@@tileblock
+	jmp	tileblock
 
 ;============
 ;
@@ -520,7 +520,7 @@ ENDIF
 ;
 ;============
 EVEN
-@@tileblock:
+tileblock:
 	mov	dx,di					; hold starting position + 1 in dx
 	inc	di						; we know the next tile also gets updated
 	repe	scasb				; see how many more in a row
