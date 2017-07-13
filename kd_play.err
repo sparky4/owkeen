@@ -1,0 +1,7 @@
+kd_play.c(604): Error! E1011: Symbol 'nothing' has not been declared
+kd_play.c(612): Error! E1156: Assembler error: 'Only SHORT displacement is allowed'
+kd_play.c(615): Error! E1156: Assembler error: 'Only SHORT displacement is allowed'
+kd_play.c(621): Warning! W118: Label 'nothing' has been defined but not referenced
+kd_play.c(621): Warning! W118: Label 'xloop' has been defined but not referenced
+kd_play.c(621): Warning! W118: Label 'yloop' has been defined but not referenced
+kd_play.c(1656): Error! E1044: Variable 'd' has incomplete type
