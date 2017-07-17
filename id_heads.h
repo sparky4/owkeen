@@ -53,15 +53,12 @@
 #define	EGAGR	2
 #define	VGAGR	3
 
-//#define GRMODE	EGAGR
-#define GRMODEEGA
-//#define GRMODECGA
-//#define GRMODEVGA
+#define GRMODE	EGAGR
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 #define GREXT	"EGA"
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 #define GREXT	"CGA"
 #endif
 

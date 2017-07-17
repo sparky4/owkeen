@@ -196,7 +196,7 @@ unsigned	xpanmask;			// prevent panning to odd pixels
 unsigned	screenpage;			// screen currently being displayed
 unsigned	otherpage;
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 unsigned	tilecache[NUMTILE16];
 #endif
 
@@ -355,8 +355,6 @@ void RF_NewMap (void)
 //
 // make a lookup table for the maps left edge
 //
-	if (mapheight > MAXMAPHEIGHT)
-		Quit ("RF_NewMap: Map too tall!");
 	spot = 0;
 	for (i=0;i<mapheight;i++)
 	{
@@ -371,6 +369,7 @@ void RF_NewMap (void)
 	for (y=0;y<PORTTILESHIGH;y++)
 		for (x=0;x<UPDATEWIDE;x++)
 			*table++ = mapbwidthtable[y]+x*2;
+
 
 //
 // the y max value clips off the bottom half of a tile so a map that is
@@ -749,7 +748,7 @@ void RFL_AnimateTiles (void)
 
 			*(current->mapplane) = tile & 0x7fff; 		// change in map
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 			if (tile<0x8000)		// background
 				tilecache[tile] = 0;
 #endif
@@ -829,14 +828,14 @@ void RFL_CalcOriginStuff (long x, long y)
 	originyscreen = originytile<<SY_T_SHIFT;
 	originmap = mapbwidthtable[originytile] + originxtile*2;
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	panx = (originxglobal>>G_P_SHIFT) & 15;
 	pansx = panx & 8;
 	pany = pansy = (originyglobal>>G_P_SHIFT) & 15;
 	panadjust = panx/8 + ylookup[pany];
 #endif
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	panx = (originxglobal>>G_P_SHIFT) & 15;
 	pansx = panx & 12;
 	pany = pansy = (originyglobal>>G_P_SHIFT) & 15;
@@ -959,7 +958,7 @@ void RF_ForceRefresh (void)
 =============================================================================
 */
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 
 
 /*
@@ -1743,7 +1742,7 @@ asm	mov	[WORD PTR es:di],UPDATETERMINATE
 =============================================================================
 */
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 
 
 /*

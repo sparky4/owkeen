@@ -33,6 +33,8 @@
 #include "KD_DEF.H"
 #ifdef __WATCOMC__
 //#include "kdass.h"
+word drawofs;
+word fontspace;
 #endif
 #pragma hdrstop
 
@@ -100,7 +102,7 @@ void DebugMemory (void)
 	US_Print ("k\n");
 	VW_UpdateScreen();
 	IN_Ack ();
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	MM_ShowMemory ();
 #endif
 }
@@ -416,7 +418,7 @@ void InitGame (void)
 #endif
 
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	if (mminfo.mainmem < 335l*1024)
 	{
 #pragma	warn	-pro

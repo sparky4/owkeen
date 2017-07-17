@@ -174,7 +174,7 @@ void	FixScoreBox (void)
 ======================
 */
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 
 void MemDrawChar (int char8,byte far *dest,unsigned width,unsigned planesize)
 {
@@ -230,7 +230,7 @@ planeloop:
 }
 #endif
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 void MemDrawChar (int char8,byte far *dest,unsigned width,unsigned planesize)
 {
 asm	mov	si,[char8]
@@ -278,7 +278,7 @@ asm	mov	ds,ax
 =
 ====================
 */
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 void ShiftScore (void)
 {
 	spritetabletype far *spr;
@@ -337,7 +337,7 @@ void ScoreThink (objtype *ob)
 		while (*ch)
 			MemDrawChar (*ch++ - '0'+1,dest+=CHARWIDTH,width,planesize);
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 		ShiftScore ();
 #endif
 		ob->needtoreact = true;
@@ -375,7 +375,7 @@ void ScoreThink (objtype *ob)
 		while (*ch)
 			MemDrawChar (*ch++ - '0'+1,dest+=CHARWIDTH,width,planesize);
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 		ShiftScore ();
 #endif
 		ob->needtoreact = true;
@@ -398,7 +398,7 @@ void ScoreThink (objtype *ob)
 		else
 			MemDrawChar (gamestate.lives +1,dest,width,planesize);
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 		ShiftScore ();
 #endif
 		ob->needtoreact = true;
@@ -423,7 +423,7 @@ void ScoreReact (objtype *ob)
 	ob->x = originxglobal;
 	ob->y = originyglobal;
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	RF_PlaceSprite (&ob->sprite
 		,ob->x+4*PIXGLOBAL
 		,ob->y+4*PIXGLOBAL
@@ -431,7 +431,7 @@ void ScoreReact (objtype *ob)
 		,spritedraw
 		,PRIORITIES-1);
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	RF_PlaceSprite (&ob->sprite
 		,ob->x+8*PIXGLOBAL
 		,ob->y+8*PIXGLOBAL

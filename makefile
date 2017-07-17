@@ -66,12 +66,12 @@ UPXQ=-qqq
 #-zp{1,2,4,8,16} struct packing align.
 #-ei force enums to be type int
 #-wo diagnose problems in overlaid code
-S_FLAGS=-s -wo
+S_FLAGS=-wo####-s
 ## -zu -zdp
 #-sg -st -of+ -zdf -zff -zgf# -k16768# -zt=84
-Z_FLAGS=-zk0 -zc -zm -ei -zp16
+Z_FLAGS=-zk0 -zc#### -zm -ei -zp16
 O_FLAGS=-opnr -oe=24 -oil+ -outback -ohm -okf+
-T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1
+T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1 -ecc
 
 CPPFLAGS=-DTARGET_MSDOS=16 -DMSDOS=1
 AFLAGS=$(WCLQ) $(T_FLAGS)
@@ -93,6 +93,7 @@ ASSHEAD=id_rf.h id_us.h id_vw.h
 ASSCOBJ=id_vw.$(OBJ) id_rf.$(OBJ) id_us.$(OBJ)
 ASSOBJS=id_rf_a.$(OBJ) id_us_a.$(OBJ) id_vw_a.$(OBJ)
 ASSOBJS2=id_rf_a_.$(OBJ) id_us_a_.$(OBJ) id_vw_a_.$(OBJ)
+ASSOBJSBCO=ID_RF_A.BCO ID_US_A.BCO ID_VW_A.BCO
 #FRESHASS=ID_RF_A.OBJ ID_US_A.OBJ ID_VW_A.OBJ
 
 KDASSLIB=kdass.lib
@@ -193,7 +194,7 @@ story.obj:
 #!endif
 #	@cd ..
 
-kdass.lib: $(ASSCOBJ) $(ASSOBJS2)
+kdass.lib: $(ASSCOBJ) $(ASSOBJSBCO)
 	$(LIBMAKERULE)
 
 kdassass: .symbolic
@@ -222,7 +223,7 @@ kd_act2.$(OBJ):	kd_act2.c
 kd_play.$(OBJ):	kd_play.c
 kd_demo.$(OBJ):	kd_demo.c
 lzhuf.$(OBJ):	lzhuf.c
-#kdass.$(OBJ):	kdass.c
+kdass.$(OBJ):	kdass.c
 id_vw_a_.$(OBJ):	id_vw.h	id_vw_a_.asm
 id_us_a_.$(OBJ):	id_us.h	id_us_a_.asm
 id_rf_a_.$(OBJ):	id_rf.h		id_rf_a_.asm

@@ -32,13 +32,13 @@
 
 #define PIXTOBLOCK		4		// 16 pixels to an update block
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 #define SCREENXMASK		(~7)
 #define SCREENXPLUS		(7)
 #define SCREENXDIV		(8)
 #endif
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 #define SCREENXMASK		(~3)
 #define SCREENXDIV		(4)
 #endif
@@ -125,7 +125,7 @@ void	VW_Startup (void)
 	if (!videocard)
 		videocard = VW_VideoID ();
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	grmode = EGAGR;
 	if (videocard != EGAcard && videocard != VGAcard)
 Quit ("Improper video card!  If you really have an EGA/VGA card that I am not \n"
@@ -133,7 +133,7 @@ Quit ("Improper video card!  If you really have an EGA/VGA card that I am not \n
 	EGAWRITEMODE(0);
 #endif
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	grmode = CGAGR;
 	if (videocard < CGAcard || videocard > VGAcard)
 Quit ("Improper video card!  If you really have a CGA card that I am not \n"
@@ -157,7 +157,7 @@ Quit ("Improper video card!  If you really have a CGA card that I am not \n"
 void	VW_Shutdown (void)
 {
 	VW_SetScreenMode (TEXTGR);
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	VW_SetLineWidth (80);
 #endif
 }
@@ -235,7 +235,7 @@ void VW_ColorBorder (int color)
 
 void VW_SetDefaultColors(void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	colors[3][16] = bordercolor;
 	_ES=FP_SEG(&colors[3]);
 	_DX=FP_OFF(&colors[3]);
@@ -248,7 +248,7 @@ void VW_SetDefaultColors(void)
 
 void VW_FadeOut(void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	int i;
 
 	for (i=3;i>=0;i--)
@@ -267,7 +267,7 @@ void VW_FadeOut(void)
 
 void VW_FadeIn(void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	int i;
 
 	for (i=0;i<4;i++)
@@ -285,7 +285,7 @@ void VW_FadeIn(void)
 
 void VW_FadeUp(void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	int i;
 
 	for (i=3;i<6;i++)
@@ -303,7 +303,7 @@ void VW_FadeUp(void)
 
 void VW_FadeDown(void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	int i;
 
 	for (i=5;i>2;i--)
@@ -337,7 +337,7 @@ void VW_SetLineWidth (int width)
 {
   int i,offset;
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 //
 // set wide virtual screen
 //
@@ -374,7 +374,7 @@ asm	out	dx,ax
 
 void	VW_ClearVideo (int color)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	EGAWRITEMODE(2);
 	EGAMAPMASK(15);
 #endif
@@ -386,7 +386,7 @@ asm	mov	al,[BYTE PTR color]
 asm	rep	stosb
 asm	stosb
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	EGAWRITEMODE(0);
 #endif
 }
@@ -479,10 +479,10 @@ void VW_DrawSprite(int x, int y, unsigned chunknum)
 	y+=spr->orgy>>G_P_SHIFT;
 	x+=spr->orgx>>G_P_SHIFT;
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	shift = (x&7)/2;
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	shift = 0;
 #endif
 
@@ -508,7 +508,7 @@ void VW_DrawSprite(int x, int y, unsigned chunknum)
 */
 
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 
 unsigned char leftmask[8] = {0xff,0x7f,0x3f,0x1f,0xf,7,3,1};
 unsigned char rightmask[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff};
@@ -593,7 +593,7 @@ done:
 #endif
 
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 
 unsigned char pixmask[4] = {0xc0,0x30,0x0c,0x03};
 unsigned char leftmask[4] = {0xff,0x3f,0x0f,0x03};
@@ -688,7 +688,7 @@ asm	stosb
 ==================
 */
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 
 void VW_Bar (unsigned x, unsigned y, unsigned width, unsigned height,
 	unsigned color)
@@ -702,7 +702,7 @@ void VW_Bar (unsigned x, unsigned y, unsigned width, unsigned height,
 #endif
 
 
-#ifdef GRMODEEGA
+#if	GRMODE == EGAGR
 
 void VW_Bar (unsigned x, unsigned y, unsigned width, unsigned height,
 	unsigned color)
@@ -857,7 +857,7 @@ void	VW_MeasureMPropString  (char far *string, word *width, word *height)
 =============================================================================
 */
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 
 #define CGACRTCWIDTH	40
 
@@ -877,70 +877,70 @@ void VW_CGAFullUpdate (void)
 
 	displayofs = bufferofs+panadjust;
 
-		mov	ax,0xb800
-		mov	es,ax
+asm	mov	ax,0xb800
+asm	mov	es,ax
 
-		mov	si,[displayofs]
-		xor	di,di
+asm	mov	si,[displayofs]
+asm	xor	di,di
 
-		mov	bx,100				// pairs of scan lines to copy
-		mov	dx,[linewidth]
-		sub	dx,80
+asm	mov	bx,100				// pairs of scan lines to copy
+asm	mov	dx,[linewidth]
+asm	sub	dx,80
 
-		mov	ds,[screenseg]
-		test	si,1
-		jz	evenblock
+asm	mov	ds,[screenseg]
+asm	test	si,1
+asm	jz	evenblock
 
 //
 // odd source
 //
-		mov	ax,39				// words accross screen
+asm	mov	ax,39				// words accross screen
 copytwolineso:
-		movsb
-		mov	cx,ax
-		rep	movsw
-		movsb
-		add	si,dx
-		add	di,0x2000-80		// go to the interlaced bank
-		movsb
-		mov	cx,ax
-		rep	movsw
-		movsb
-		add	si,dx
-		sub	di,0x2000			// go to the non interlaced bank
+asm	movsb
+asm	mov	cx,ax
+asm	rep	movsw
+asm	movsb
+asm	add	si,dx
+asm	add	di,0x2000-80		// go to the interlaced bank
+asm	movsb
+asm	mov	cx,ax
+asm	rep	movsw
+asm	movsb
+asm	add	si,dx
+asm	sub	di,0x2000			// go to the non interlaced bank
 
-		dec	bx
-		jnz	copytwolineso
-		jmp	blitdone
+asm	dec	bx
+asm	jnz	copytwolineso
+asm	jmp	blitdone
 
 //
 // even source
 //
 evenblock:
-		mov	ax,40				// words accross screen
+asm	mov	ax,40				// words accross screen
 copytwolines:
-		mov	cx,ax
-		rep	movsw
-		add	si,dx
-		add	di,0x2000-80		// go to the interlaced bank
-		mov	cx,ax
-		rep	movsw
-		add	si,dx
-		sub	di,0x2000			// go to the non interlaced bank
+asm	mov	cx,ax
+asm	rep	movsw
+asm	add	si,dx
+asm	add	di,0x2000-80		// go to the interlaced bank
+asm	mov	cx,ax
+asm	rep	movsw
+asm	add	si,dx
+asm	sub	di,0x2000			// go to the non interlaced bank
 
-		dec	bx
-		jnz	copytwolines
+asm	dec	bx
+asm	jnz	copytwolines
 
 blitdone:
-		mov	ax,ss
-		mov	ds,ax
-		mov	es,ax
+asm	mov	ax,ss
+asm	mov	ds,ax
+asm	mov	es,ax
 
-		xor	ax,ax				// clear out the update matrix
-		mov	cx,UPDATEWIDE*UPDATEHIGH/2
+asm	xor	ax,ax				// clear out the update matrix
+asm	mov	cx,UPDATEWIDE*UPDATEHIGH/2
 
-		mov	di,[baseupdateptr]
-		rep	stosw
+asm	mov	di,[baseupdateptr]
+asm	rep	stosw
 
 	updateptr = baseupdateptr;
 	*(unsigned *)(updateptr + UPDATEWIDE*PORTTILESHIGH) = UPDATETERMINATE;
@@ -1095,7 +1095,7 @@ void VW_SetCursor (int spritenum)
 
 void VW_InitDoubleBuffer (void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	VW_SetScreen (displayofs+panadjust,0);			// no pel pan
 #endif
 }
@@ -1114,7 +1114,7 @@ void VW_InitDoubleBuffer (void)
 
 void VW_FixRefreshBuffer (void)
 {
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	VW_ScreenToScreen (displayofs,bufferofs,PORTTILESWIDE*4*CHARWIDTH,
 		PORTTILESHIGH*16);
 #endif
@@ -1206,30 +1206,28 @@ void VW_UpdateScreen (void)
 	if (cursorvisible>0)
 		VWL_DrawCursor();
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	VWL_UpdateScreenBlocks();
 
-	__asm {
-		cli
-		mov	cx,[displayofs]
-		add	cx,[panadjust]
-		mov	dx,CRTC_INDEX
-		mov	al,0ch		// start address high register
-		out	dx,al
-		inc	dx
-		mov	al,ch
-		out	dx,al
-		dec	dx
-		mov	al,0dh		// start address low register
-		out	dx,al
-		mov	al,cl
-		inc	dx
-		out	dx,al
-		sti
-	}
+asm	cli
+asm	mov	cx,[displayofs]
+asm	add	cx,[panadjust]
+asm	mov	dx,CRTC_INDEX
+asm	mov	al,0ch		// start address high register
+asm	out	dx,al
+asm	inc	dx
+asm	mov	al,ch
+asm	out	dx,al
+asm	dec	dx
+asm	mov	al,0dh		// start address low register
+asm	out	dx,al
+asm	mov	al,cl
+asm	inc	dx
+asm	out	dx,al
+asm	sti
 
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	VW_CGAFullUpdate();
 #endif
 
@@ -1372,10 +1370,10 @@ void VWB_DrawSprite(int x, int y, int chunknum)
 	x+=spr->orgx>>G_P_SHIFT;
 
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	shift = (x&7)/2;
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	shift = 0;
 #endif
 

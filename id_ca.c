@@ -858,11 +858,11 @@ void CAL_SetupGrFile (void)
 
 #ifdef GRHEADERLINKED
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 	grhuffman = (huffnode *)&EGAdict;
 	grstarts = (long _seg *)FP_SEG(&EGAhead);
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 	grhuffman = (huffnode *)&CGAdict;
 	grstarts = (long _seg *)FP_SEG(&CGAhead);
 #endif
@@ -1214,7 +1214,7 @@ cachein:
 
 //===========================================================================
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 
 /*
 ======================
@@ -1362,7 +1362,7 @@ void CAL_CacheSprite (int chunk, char far *compressed)
 	spritetabletype far *spr;
 	spritetype _seg *dest;
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 //
 // CGA has no pel panning, so shifts are never needed
 //
@@ -1382,7 +1382,7 @@ void CAL_CacheSprite (int chunk, char far *compressed)
 #endif
 
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 
 //
 // calculate sizes
@@ -1495,12 +1495,12 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 	// expanded sizes of tile8/16/32 are implicit
 	//
 
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 #define BLOCK		32
 #define MASKBLOCK	40
 #endif
 
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 #define BLOCK		16
 #define MASKBLOCK	32
 #endif
@@ -1980,10 +1980,10 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 				if (xh - lastx > BARSTEP)
 				{
 					for (x=lastx;x<=xh;x++)
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 						VWB_Vlin (thy,thy+13,x,14);
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 						VWB_Vlin (thy,thy+13,x,SECONDCOLOR);
 #endif
 					lastx = xh;
@@ -2063,10 +2063,10 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 		{
 			xh = thx + NUMBARS;
 			for (x=lastx;x<=xh;x++)
-#ifdef GRMODEEGA
+#if GRMODE == EGAGR
 				VWB_Vlin (thy,thy+13,x,14);
 #endif
-#ifdef GRMODECGA
+#if GRMODE == CGAGR
 				VWB_Vlin (thy,thy+13,x,SECONDCOLOR);
 #endif
 			VW_UpdateScreen();
