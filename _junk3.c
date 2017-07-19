@@ -695,7 +695,7 @@ static void
 #endif
 SDL_SSStopSample(void)
 {
-	/*(long)*/ssSample = (long)0;
+	/*(long)*/ssSample = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -759,7 +759,7 @@ SDL_SSService(void)
 					ssHoldOver = v;
 				if (!(--ssLengthLeft))
 				{
-					/*(long)*/ssSample = (long)0;
+					/*(long)*/ssSample = 0;
 					SDL_SoundFinished();
 				}
 			}
@@ -1070,7 +1070,7 @@ SDL_ALStopSound(void)
 asm	pushf
 asm	cli
 
-	/*(long)*/alSound = (long)0;
+	/*(long)*/alSound = 0;
 	alOut(alFreqH + 0,0);
 
 asm	popf
@@ -1143,7 +1143,7 @@ SDL_ALSoundService(void)
 
 		if (!(--alLengthLeft))
 		{
-			/*(long)*/alSound = (long)0;
+			/*(long)*/alSound = 0;
 			alOut(alFreqH + 0,0);
 			SDL_SoundFinished();
 		}
