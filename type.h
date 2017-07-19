@@ -129,7 +129,7 @@ typedef long fixed;
 
 #define MEMPTRCONV			(memptr *)&
 
-#define	__ID_PM__
+//#define	__ID_PM__
 
 #define BAKAPEEQUIT 	getch(); VL_SetTextMode (); printf("\n_fmemcpy() and VW_Startup breaks. I do not know how to fix this.\n"); MM_Shutdown (); exit(1);
 #endif

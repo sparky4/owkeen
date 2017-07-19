@@ -478,7 +478,7 @@ void InitGame (void)
 
 	US_FinishTextScreen();
 
-	VW_SetScreenMode (grmode);
+	VW_SetScreenMode (GRMODE);
 	VW_ClearVideo (BLACK);
 }
 

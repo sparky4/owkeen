@@ -911,32 +911,32 @@ void CAL_SetupGrFile (void)
 //
 // load the pic and sprite headers into the arrays in the data segment
 //
-//	if(NUMPICS>0){
-		MM_GetPtr(&(memptr)pictable,NUMPICS*sizeof(pictabletype));
-		CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
-		MM_GetPtr(&compseg,chunkcomplen);
-		CA_FarRead (grhandle,compseg,chunkcomplen);
-		CAL_HuffExpand (compseg, (byte huge *)pictable,NUMPICS*sizeof(pictabletype),grhuffman);
-		MM_FreePtr(&compseg);
-//	}
+#if NUMPICS>0
+	MM_GetPtr(&(memptr)pictable,NUMPICS*sizeof(pictabletype));
+	CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
+	MM_GetPtr(&compseg,chunkcomplen);
+	CA_FarRead (grhandle,compseg,chunkcomplen);
+	CAL_HuffExpand (compseg, (byte huge *)pictable,NUMPICS*sizeof(pictabletype),grhuffman);
+	MM_FreePtr(&compseg);
+#endif
 
-//	if(NUMPICM>0){
-		MM_GetPtr(&(memptr)picmtable,NUMPICM*sizeof(pictabletype));
-		CAL_GetGrChunkLength(STRUCTPICM);		// position file pointer
-		MM_GetPtr(&compseg,chunkcomplen);
-		CA_FarRead (grhandle,compseg,chunkcomplen);
-		CAL_HuffExpand (compseg, (byte huge *)picmtable,NUMPICS*sizeof(pictabletype),grhuffman);
-		MM_FreePtr(&compseg);
-//	}
+#if NUMPICM>0
+	MM_GetPtr(&(memptr)picmtable,NUMPICM*sizeof(pictabletype));
+	CAL_GetGrChunkLength(STRUCTPICM);		// position file pointer
+	MM_GetPtr(&compseg,chunkcomplen);
+	CA_FarRead (grhandle,compseg,chunkcomplen);
+	CAL_HuffExpand (compseg, (byte huge *)picmtable,NUMPICS*sizeof(pictabletype),grhuffman);
+	MM_FreePtr(&compseg);
+#endif
 
-//	if(NUMSPRITES>0){
-		MM_GetPtr(&(memptr)spritetable,NUMSPRITES*sizeof(spritetabletype));
-		CAL_GetGrChunkLength(STRUCTSPRITE);	// position file pointer
-		MM_GetPtr(&compseg,chunkcomplen);
-		CA_FarRead (grhandle,compseg,chunkcomplen);
-		CAL_HuffExpand (compseg, (byte huge *)spritetable,NUMSPRITES*sizeof(spritetabletype),grhuffman);
-		MM_FreePtr(&compseg);
-//	}
+#if NUMSPRITES>0
+	MM_GetPtr(&(memptr)spritetable,NUMSPRITES*sizeof(spritetabletype));
+	CAL_GetGrChunkLength(STRUCTSPRITE);	// position file pointer
+	MM_GetPtr(&compseg,chunkcomplen);
+	CA_FarRead (grhandle,compseg,chunkcomplen);
+	CAL_HuffExpand (compseg, (byte huge *)spritetable,NUMSPRITES*sizeof(spritetabletype),grhuffman);
+	MM_FreePtr(&compseg);
+#endif
 
 }
 
@@ -1059,10 +1059,21 @@ void CA_Startup (void)
 	unlink ("PROFILE.TXT");
 	profilehandle = open("PROFILE.TXT", O_CREAT | O_WRONLY | O_TEXT);
 #endif
-
+#ifdef __WATCOMC__
+	printf("CA_Startup\n"); IN_Ack();
+#endif
 	CAL_SetupMapFile ();
+#ifdef __WATCOMC__
+	printf("."); IN_Ack();
+#endif
 	CAL_SetupGrFile ();
+#ifdef __WATCOMC__
+	printf("."); IN_Ack();
+#endif
 	CAL_SetupAudioFile ();
+#ifdef __WATCOMC__
+	printf("ok\n"); IN_Ack();
+#endif
 
 	mapon = -1;
 	ca_levelbit = 1;

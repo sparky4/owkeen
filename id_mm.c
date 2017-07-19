@@ -135,43 +135,61 @@ void 		MML_ShutdownXMS (void);
 
 boolean MML_CheckForEMS (void)
 {
-  char	emmname[9] = "EMMXXXX0";
+	boolean	emmcfems = false;
+	static char	emmname[9] = "EMMXXXX0";
 
-asm	mov	dx,OFFSET emmname
-asm	mov	ax,0x3d00
-asm	int	0x21		// try to open EMMXXXX0 device
-asm	jc	error
+	__asm {
+		mov	dx,OFFSET emmname
+		mov	ax,0x3d00
+		int	0x21		// try to open EMMXXXX0 device
+		jc	error
 
-asm	mov	bx,ax
-asm	mov	ax,0x4400
+		mov	bx,ax
+		mov	ax,0x4400
 
-asm	int	0x21		// get device info
-asm	jc	error
+		int	0x21		// get device info
+		jc	error
 
-asm	and	dx,0x80
-asm	jz	error
+		and	dx,0x80
+		jz	error
 
-asm	mov	ax,0x4407
+		mov	ax,0x4407
 
-asm	int	0x21		// get status
-asm	jc	error
-asm	or	al,al
-asm	jz	error
+		int	0x21		// get status
+		jc	error
+		or	al,al
+		jz	error
 
-asm	mov	ah,0x3e
-asm	int	0x21		// close handle
-asm	jc	error
+		mov	ah,0x3e
+		int	0x21		// close handle
+		jc	error
 
-//
-// EMS is good
-//
-  return true;
-
+		//
+		// EMS is good
+		//
+		mov	emmcfems,1
+		jmp	End
+#ifdef __BORLANDC__
+	}
+#endif
 error:
-//
-// EMS is bad
-//
-  return false;
+#ifdef __BORLANDC__
+	__asm {
+#endif
+		//
+		// EMS is bad
+		//
+		mov	emmcfems,0
+#ifdef __BORLANDC__
+	}
+#endif
+		End:
+#ifdef __WATCOMC__
+	}
+#endif
+
+	return emmcfems;
+	
 }
 
 /*
