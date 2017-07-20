@@ -2,7 +2,7 @@
 #define __TYPE_H__
 #ifdef __WATCOMC__
 /*
- * open watcom definitions for wolf3d
+ * open watcom definitions for keen dreams
  * by sparky4
  */
 #include <conio.h>
@@ -119,7 +119,8 @@ typedef	struct
 		} Rect;*/
 
 //typedef void __based( void ) * memptr;	////old //----typedef void __based(__self) * memptr;
-#define _seg __based( void )
+//#define _seg __based( void )
+#define _seg __based(__self)
 typedef long fixed;
 
 #define _argv __argv
@@ -132,24 +133,3 @@ typedef long fixed;
 
 #define BAKAPEEQUIT 	getch(); VL_SetTextMode (); printf("\n_fmemcpy() and VW_Startup breaks. I do not know how to fix this.\n"); MM_Shutdown (); exit(1);
 #endif
-
-/*
-./id_ca.c:	if ((handle = open(GREXT"HEAD."EXTENSION,
-./id_ca.c:		Quit ("Can't open "GREXT"HEAD."EXTENSION"!");
-./id_ca.c://	grhandle = open(GREXT"GRAPH."EXTENSION, O_RDONLY | O_BINARY); NOLAN
-./id_ca.c://	if ((handle = open("MAPHEAD."EXTENSION,
-./id_ca.c:	if ((maphandle = open("MAPTEMP."EXTENSION,
-./id_ca.c:		Quit ("Can't open MAPTEMP."EXTENSION"!");
-./id_ca.c:	if ((handle = open("AUDIOHED."EXTENSION,
-./id_ca.c:		Quit ("Can't open AUDIOHED."EXTENSION"!");
-./id_ca.c:	if ((audiohandle = open("AUDIOT."EXTENSION,
-./id_ca.c:		Quit ("Can't open AUDIOT."EXTENSION"!");
-./id_ca.c://	if ((audiohandle = open("AUDIO."EXTENSION,	NOLAN
-
-./id_us.c:	for (s = "."EXTENSION;*s;)
-./id_us.c:			&&	(!strcmp(game->signature,EXTENSION))
-./id_us.c:			strcpy(game->signature,EXTENSION);
-./id_us.c:			name = "GAMETEXT."EXTENSION;
-./id_us.c:			name = "CONTEXT."EXTENSION;
-./id_us.c:			name = "STORY."EXTENSION;
-*/

@@ -1,0 +1,42 @@
+===============================================================================
+		CAL_GetGrChunkLength
+===============================================================================
+	grstarts[chunk+1]=157
+	grstarts[chunk+1]=157
+		grstarts 157-	-4	=153
+	chunkcomplen=153
+
+chunk=0
+	 grstarts[chunk]=0000
+	&grstarts[chunk]=0000
+	 grstarts[chunk+1]=009d
+	&grstarts[chunk+1]=0004
+
+===============================================================================
+		CAL_GetGrChunkLength
+===============================================================================
+	grstarts[chunk+1]=166
+	grstarts[chunk+1]=166
+		grstarts 166-	153	=5
+	chunkcomplen=5
+
+chunk=1
+	 grstarts[chunk]=009d
+	&grstarts[chunk]=0004
+	 grstarts[chunk+1]=00a6
+	&grstarts[chunk+1]=0008
+
+===============================================================================
+		CAL_GetGrChunkLength
+===============================================================================
+	grstarts[chunk+1]=2702
+	grstarts[chunk+1]=2702
+		grstarts 2702-	162	=2532
+	chunkcomplen=2532
+
+chunk=2
+	 grstarts[chunk]=00a6
+	&grstarts[chunk]=0008
+	 grstarts[chunk+1]=0a8e
+	&grstarts[chunk+1]=000c
+

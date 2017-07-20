@@ -275,7 +275,7 @@ USL_ReadConfig(void)
 	SMMode		sm;
 	ControlType	ctl;
 
-	if ((file = open("KDREAMS.CFG",O_BINARY | O_RDONLY)) != -1)
+	if ((file = open("KDREAMS.NFG",O_BINARY | O_RDONLY)) != -1)
 	{
 		read(file,Scores,sizeof(HighScore) * MaxScores);
 		read(file,&sd,sizeof(sd));
@@ -312,7 +312,7 @@ USL_WriteConfig(void)
 {
 	int	file;
 
-	file = open("KDREAMS.CFG", O_CREAT | O_BINARY | O_WRONLY,
+	file = open("KDREAMS.NFG", O_CREAT | O_BINARY | O_WRONLY,
 				S_IREAD | S_IWRITE | S_IFREG);
 	if (file != -1)
 	{

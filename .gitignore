@@ -1,7 +1,7 @@
 # Lines starting with '#' are considered comments.
 # Ignore (generated) html files,
-#*.err
-#*.ERR
+*.err
+*.ERR
 makefile~
 README~
 TODO~
@@ -19,3 +19,6 @@ KDREAMS.DAT
 #*.[oa]
 #*.16W
 #*.16B
+*.obj
+*.OBJ
+*.BCO

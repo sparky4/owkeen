@@ -148,19 +148,34 @@ SDMode		oldsoundmode;
 
 void CAL_GetGrChunkLength (int chunk)
 {
-	printf("	grstarts[chunk]=%lu\n", grstarts[chunk]);
+	printf("===============================================================================\n");
+	printf("		CAL_GetGrChunkLength\n");
+	printf("===============================================================================\n");
+	printf("	grstarts[chunk+1]=%ld\n", grstarts[chunk+1]);
+//	printf("lseek return=%ld\n",
 	lseek(grhandle,grstarts[chunk],SEEK_SET);
+//	printf("	chunkexplen=%ld\n", chunkexplen);
+	printf("	grstarts[chunk+1]=%ld\n", grstarts[chunk+1]);
+//	printf("read return=%d\n",
 	read(grhandle,&chunkexplen,sizeof(chunkexplen));
-	printf("	grstarts[chunk]=%lu\n", grstarts[chunk]);
-	printf("	chunkexplen=%lu\n", chunkexplen); IN_Ack();
+//	printf("	chunkexplen=%ld\n", chunkexplen); IN_Ack();
 	chunkcomplen = grstarts[chunk+1]-grstarts[chunk]-4;
-	printf("		%lu-", grstarts[(chunk+1)]);
-	printf("	%lu\n", (grstarts[chunk]-4));
-	printf("			=%lu\n", grstarts[(chunk+1)]-(grstarts[chunk]-4));
-	printf("		%lu-", grstarts[chunk]);
-	printf("	%lu\n", grstarts[chunk]-4);
-	printf("			=%lu\n", grstarts[chunk]-grstarts[chunk]-4);
-	printf("	chunkcomplen=%lu\n", chunkcomplen); IN_Ack();
+	printf("		grstarts %ld-", grstarts[chunk+1]);	printf("	%ld", grstarts[chunk]-4);	printf("	=%ld\n", grstarts[chunk+1]-grstarts[chunk]-4);
+	printf("	chunkcomplen=%ld\n", chunkcomplen);
+	printf("\n");
+
+//	printf("	 grstarts=%04x\n", grstarts);
+//	printf("	*grstarts=%04x\n", *grstarts);
+//	printf("	&grstarts=%04x\n", &grstarts);
+	printf("chunk=%d\n", chunk);
+	printf("	 grstarts[chunk]=%04x\n", grstarts[chunk]);
+//	printf("	*grstarts[chunk]=%04x\n", *grstarts[chunk]);
+	printf("	&grstarts[chunk]=%04x\n", &grstarts[chunk]);
+	printf("	 grstarts[chunk+1]=%04x\n", grstarts[chunk+1]);
+//	printf("	*grstarts[chunk+1]=%04x\n", *grstarts[chunk+1]);
+	printf("	&grstarts[chunk+1]=%04x\n", &grstarts[chunk+1]);
+
+	printf("\n"); IN_Ack();
 }
 
 
@@ -925,7 +940,6 @@ void CAL_SetupGrFile (void)
 #if NUMPICS>0
 	MM_GetPtr(MEMPTRCONV pictable,NUMPICS*sizeof(pictabletype));
 	CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
-printf("chunkcomplen=%lu\n", chunkcomplen); IN_Ack();
 	MM_GetPtr(&compseg,chunkcomplen);
 	CA_FarRead (grhandle,compseg,chunkcomplen);
 	CAL_HuffExpand (compseg, (byte huge *)pictable,NUMPICS*sizeof(pictabletype),grhuffman);

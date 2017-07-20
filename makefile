@@ -66,10 +66,10 @@ UPXQ=-qqq
 #-zp{1,2,4,8,16} struct packing align.
 #-ei force enums to be type int
 #-wo diagnose problems in overlaid code
-S_FLAGS=-wo####-s
+S_FLAGS=-sg -wo -st####-s
 ## -zu -zdp
-#-sg -st -of+ -zdf -zff -zgf# -k16768# -zt=84
-Z_FLAGS=-zk0 -zc#### -zm -ei -zp16
+# -zdf -zff -zgf# -k16768#
+Z_FLAGS=-zk0 -zc -zt=84 -zm -ei -zp16
 O_FLAGS=-opnr -oe=24 -oil+ -outback -ohm -okf+
 T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1 -ecc
 
