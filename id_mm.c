@@ -293,7 +293,7 @@ void MM_Startup (void)
 // get all available near conventional memory segments
 //
 	length=coreleft();
-	start = (void far *)(nearheap = malloc(length));
+	start = (void far *)(nearheap = _nmalloc(length));
 
 	length -= 16-(FP_OFF(start)&15);
 	length -= SAVENEARHEAP;

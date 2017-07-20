@@ -148,9 +148,19 @@ SDMode		oldsoundmode;
 
 void CAL_GetGrChunkLength (int chunk)
 {
+	printf("	grstarts[chunk]=%lu\n", grstarts[chunk]);
 	lseek(grhandle,grstarts[chunk],SEEK_SET);
 	read(grhandle,&chunkexplen,sizeof(chunkexplen));
+	printf("	grstarts[chunk]=%lu\n", grstarts[chunk]);
+	printf("	chunkexplen=%lu\n", chunkexplen); IN_Ack();
 	chunkcomplen = grstarts[chunk+1]-grstarts[chunk]-4;
+	printf("		%lu-", grstarts[(chunk+1)]);
+	printf("	%lu\n", (grstarts[chunk]-4));
+	printf("			=%lu\n", grstarts[(chunk+1)]-(grstarts[chunk]-4));
+	printf("		%lu-", grstarts[chunk]);
+	printf("	%lu\n", grstarts[chunk]-4);
+	printf("			=%lu\n", grstarts[chunk]-grstarts[chunk]-4);
+	printf("	chunkcomplen=%lu\n", chunkcomplen); IN_Ack();
 }
 
 
@@ -886,7 +896,7 @@ void CAL_SetupGrFile (void)
 //
 // load the data offsets from ???head.ext
 //
-	MM_GetPtr (&(memptr)grstarts,(NUMCHUNKS+1)*4);
+	MM_GetPtr (MEMPTRCONV grstarts,(NUMCHUNKS+1)*4);
 
 	if ((handle = open(GREXT"HEAD."EXTENSION,
 		 O_RDONLY | O_BINARY, S_IREAD)) == -1)
@@ -911,9 +921,11 @@ void CAL_SetupGrFile (void)
 //
 // load the pic and sprite headers into the arrays in the data segment
 //
+	grstarts[STRUCTPIC]=0;
 #if NUMPICS>0
-	MM_GetPtr(&(memptr)pictable,NUMPICS*sizeof(pictabletype));
+	MM_GetPtr(MEMPTRCONV pictable,NUMPICS*sizeof(pictabletype));
 	CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
+printf("chunkcomplen=%lu\n", chunkcomplen); IN_Ack();
 	MM_GetPtr(&compseg,chunkcomplen);
 	CA_FarRead (grhandle,compseg,chunkcomplen);
 	CAL_HuffExpand (compseg, (byte huge *)pictable,NUMPICS*sizeof(pictabletype),grhuffman);
@@ -921,7 +933,7 @@ void CAL_SetupGrFile (void)
 #endif
 
 #if NUMPICM>0
-	MM_GetPtr(&(memptr)picmtable,NUMPICM*sizeof(pictabletype));
+	MM_GetPtr(MEMPTRCONV picmtable,NUMPICM*sizeof(pictabletype));
 	CAL_GetGrChunkLength(STRUCTPICM);		// position file pointer
 	MM_GetPtr(&compseg,chunkcomplen);
 	CA_FarRead (grhandle,compseg,chunkcomplen);
@@ -930,7 +942,7 @@ void CAL_SetupGrFile (void)
 #endif
 
 #if NUMSPRITES>0
-	MM_GetPtr(&(memptr)spritetable,NUMSPRITES*sizeof(spritetabletype));
+	MM_GetPtr(MEMPTRCONV spritetable,NUMSPRITES*sizeof(spritetabletype));
 	CAL_GetGrChunkLength(STRUCTSPRITE);	// position file pointer
 	MM_GetPtr(&compseg,chunkcomplen);
 	CA_FarRead (grhandle,compseg,chunkcomplen);
@@ -966,7 +978,7 @@ void CAL_SetupMapFile (void)
 		 O_RDONLY | O_BINARY, S_IREAD)) == -1)
 		Quit ("Can't open KDREAMS.MAP!");
 	length = filelength(handle);
-	MM_GetPtr (&(memptr)tinf,length);
+	MM_GetPtr (MEMPTRCONV tinf,length);
 	CA_FarRead(handle, tinf, length);
 	close(handle);
 #else
@@ -1016,7 +1028,7 @@ void CAL_SetupAudioFile (void)
 		 O_RDONLY | O_BINARY, S_IREAD)) == -1)
 		Quit ("Can't open AUDIOHED."EXTENSION"!");
 	length = filelength(handle);
-	MM_GetPtr (&(memptr)audiostarts,length);
+	MM_GetPtr (MEMPTRCONV audiostarts,length);
 	CA_FarRead(handle, (byte far *)audiostarts, length);
 	close(handle);
 #else
@@ -1062,10 +1074,8 @@ void CA_Startup (void)
 #ifdef __WATCOMC__
 	printf("CA_Startup\n"); IN_Ack();
 #endif
+
 	CAL_SetupMapFile ();
-#ifdef __WATCOMC__
-	printf("."); IN_Ack();
-#endif
 	CAL_SetupGrFile ();
 #ifdef __WATCOMC__
 	printf("."); IN_Ack();
@@ -1121,7 +1131,7 @@ void CA_CacheAudioChunk (int chunk)
 
 	if (audiosegs[chunk])
 	{
-		MM_SetPurge (&(memptr)audiosegs[chunk],0);
+		MM_SetPurge (MEMPTRCONV audiosegs[chunk],0);
 		return;							// allready in memory
 	}
 
@@ -1136,7 +1146,7 @@ void CA_CacheAudioChunk (int chunk)
 
 #ifndef AUDIOHEADERLINKED
 
-	MM_GetPtr (&(memptr)audiosegs[chunk],compressed);
+	MM_GetPtr (MEMPTRCONV audiosegs[chunk],compressed);
 	CA_FarRead(audiohandle,audiosegs[chunk],compressed);
 
 #else
@@ -1155,7 +1165,7 @@ void CA_CacheAudioChunk (int chunk)
 
 	expanded = *(long far *)source;
 	source += 4;			// skip over length
-	MM_GetPtr (&(memptr)audiosegs[chunk],expanded);
+	MM_GetPtr (MEMPTRCONV audiosegs[chunk],expanded);
 	CAL_HuffExpand (source,audiosegs[chunk],expanded,audiohuffman);
 
 	if (compressed>BUFFERSIZE)
@@ -1197,7 +1207,7 @@ void CA_LoadAllSounds (void)
 
 	for (i=0;i<NUMSOUNDS;i++,start++)
 		if (audiosegs[start])
-			MM_SetPurge (&(memptr)audiosegs[start],3);		// make purgable
+			MM_SetPurge (MEMPTRCONV audiosegs[start],3);		// make purgable
 
 cachein:
 
@@ -1685,10 +1695,10 @@ void CA_CacheMap (int mapnum)
 // free up memory from last map
 //
 	if (mapon>-1 && mapheaderseg[mapon])
-		MM_SetPurge (&(memptr)mapheaderseg[mapon],3);
+		MM_SetPurge (MEMPTRCONV mapheaderseg[mapon],3);
 	for (plane=0;plane<3;plane++)
 		if (mapsegs[plane])
-			MM_FreePtr (&(memptr)mapsegs[plane]);
+			MM_FreePtr (MEMPTRCONV mapsegs[plane]);
 
 	mapon = mapnum;
 
@@ -1703,7 +1713,7 @@ void CA_CacheMap (int mapnum)
 		if (pos<0)						// $FFFFFFFF start is a sparse map
 		  Quit ("CA_CacheMap: Tried to load a non existant map!");
 
-		MM_GetPtr(&(memptr)mapheaderseg[mapnum],sizeof(maptype));
+		MM_GetPtr(MEMPTRCONV mapheaderseg[mapnum],sizeof(maptype));
 		lseek(maphandle,pos,SEEK_SET);
 
 #ifdef MAPHEADERLINKED
@@ -1722,7 +1732,7 @@ void CA_CacheMap (int mapnum)
 #endif
 	}
 	else
-		MM_SetPurge (&(memptr)mapheaderseg[mapnum],0);
+		MM_SetPurge (MEMPTRCONV mapheaderseg[mapnum],0);
 
 //
 // load the planes in
@@ -1734,7 +1744,7 @@ void CA_CacheMap (int mapnum)
 
 	for (plane = 0; plane<3; plane++)
 	{
-		dest = &(memptr)mapsegs[plane];
+		dest = MEMPTRCONV mapsegs[plane];
 		MM_GetPtr(dest,size);
 
 		pos = mapheaderseg[mapnum]->planestart[plane];

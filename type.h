@@ -13,7 +13,6 @@
 #include <i86.h>
 
 #define VERSION __DATE__ " " __TIME__
-#define _FCORELEFT 0x90000UL+16UL
 
 static union REGS CPURegs;
 static struct SREGS	CPUSTKRegs;
@@ -61,8 +60,8 @@ static struct SREGS	CPUSTKRegs;
 
 inline unsigned long farcoreleft()
 {
-	_fheapgrow();
-	return _FCORELEFT;
+//	_fheapgrow();
+	return 0x90000UL+16UL;
 }
 inline unsigned long coreleft()
 {
