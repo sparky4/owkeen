@@ -69,7 +69,7 @@ UPXQ=-qqq
 S_FLAGS=-sg -wo -st####-s
 ## -zu -zdp
 # -zdf -zff -zgf# -k16768#
-Z_FLAGS=-zk0 -zc -zt=84 -zm -ei -zp16
+Z_FLAGS=-zk0 -zc -zt=32767 -zm -ei# -zp16
 O_FLAGS=-opnr -oe=24 -oil+ -outback -ohm -okf+
 T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1 -ecc
 
@@ -160,29 +160,30 @@ kdreams.$(OBJ):	kdreams.c
 #
 # non executable objects libraries
 #
-context.obj:
-	@wcl static/makeobj.c
-	@wine makeobj f static/CONTEXT.KDR context.obj
-gametext.obj:
-	@makeobj f static/GAMETEXT.KDR gametext.obj
-kdradict.obj:
-	@makeobj c static/AUDIODCT.KDR kdradict.obj _audiodict
-kdrahead.obj:
-	@makeobj f static/AUDIOHHD.KDR kdrahead.obj _AudioHeader _audiohead
-kdrcdict.obj:
-	@makeobj c static/CGADICT.KDR kdrcdict.obj _CGAdict
-kdrchead.obj:
-	@makeobj f static/CGAHEAD.KDR kdrchead.obj CGA_grafixheader _CGAhead
-kdredict.obj:
-	@makeobj c static/EGADICT.KDR kdredict.obj _EGAdict
-kdrehead.obj:
-	@makeobj f static/EGAHEAD.KDR kdrehead.obj EGA_grafixheader _EGAhead
-kdrmdict.obj:
-	@makeobj c static/MAPDICT.KDR kdrmdict.obj _mapdict
-kdrmhead.obj:
-	@makeobj f static/MAPHEAD.KDR kdrmhead.obj MapHeader _maphead
-story.obj:
-	@makeobj f static/STORY.KDR story.obj
+#context.obj:
+#	@cd static
+#	@wcl static/makeobj.c
+#	@makeobj f static/CONTEXT.KDR context.obj
+#gametext.obj:
+#	@makeobj f static/GAMETEXT.KDR gametext.obj
+#kdradict.obj:
+#	@makeobj c static/AUDIODCT.KDR kdradict.obj _audiodict
+#kdrahead.obj:
+#	@makeobj f static/AUDIOHHD.KDR kdrahead.obj _AudioHeader _audiohead
+#kdrcdict.obj:
+#	@makeobj c static/CGADICT.KDR kdrcdict.obj _CGAdict
+#kdrchead.obj:
+#	@makeobj f static/CGAHEAD.KDR kdrchead.obj CGA_grafixheader _CGAhead
+#kdredict.obj:
+#	@makeobj c static/EGADICT.KDR kdredict.obj _EGAdict
+#kdrehead.obj:
+#	@makeobj f static/EGAHEAD.KDR kdrehead.obj EGA_grafixheader _EGAhead
+#kdrmdict.obj:
+#	@makeobj c static/MAPDICT.KDR kdrmdict.obj _mapdict
+#kdrmhead.obj:
+#	@makeobj f static/MAPHEAD.KDR kdrmhead.obj MapHeader _maphead
+#story.obj:
+#	@makeobj f static/STORY.KDR story.obj
 
 #$(STATICOBJS):
 #	@echo $(STATICOBJS)

@@ -518,10 +518,10 @@ extern	statetype s_bonus1;
 
 #pragma warn -sus
 
-statetype s_bonus  	 = {NULL,NULL,step,false,
+statetype s_bonus  	 = {/*NULL*/0,/*NULL*/0,step,false,
 	false,20, 0,0, BonusThink, NULL, DrawReact2, &s_bonus};
 
-statetype s_bonusrise  	 = {NULL,NULL,slide,false,
+statetype s_bonusrise  	 = {/*NULL*/0,/*NULL*/0,slide,false,
 	false,40, 0,8, NULL, NULL, DrawReact3, NULL};
 
 #pragma warn +sus

@@ -1303,9 +1303,9 @@ statetype s_boobusjump	= {BOOBUSJUMPSPR,BOOBUSJUMPSPR,think,false,
 
 statetype s_boobusdie	= {BOOBUSJUMPSPR,BOOBUSJUMPSPR,step,false,
 	false,4, 0,0, FragThink, NULL, DrawReact, &s_boobusdie};
-statetype s_boobusdie2	= {NULL,NULL,step,false,
+statetype s_boobusdie2	= {/*NULL*/0,/*NULL*/0,step,false,
 	false,4, 0,0, FragThink, NULL, NULL, &s_boobusdie2};
-statetype s_boobusdie3	= {NULL,NULL,step,false,
+statetype s_boobusdie3	= {/*NULL*/0,/*NULL*/0,step,false,
 	false,250, 0,0, FinishThink, NULL, NULL, NULL};
 
 statetype s_deathboom1	= {BOOBUSBOOM1SPR,BOOBUSBOOM1SPR,step,false,

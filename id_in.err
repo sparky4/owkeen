@@ -1,2 +1,0 @@
-id_in.c(455): Warning! W111: Meaningless use of an expression
-id_in.c(1123): Warning! W119: Address of static function 'INL_KeyService' has been taken

@@ -111,7 +111,7 @@ void ScoreReact (objtype *ob);
 
 void MemDrawChar (int char8,byte far *dest,unsigned width,unsigned planesize);
 
-statetype s_score	= {NULL,NULL,think,false,
+statetype s_score	= {/*NULL*/0,/*NULL*/0,think,false,
 	false,0, 0,0, ScoreThink , NULL, ScoreReact, NULL};
 
 
@@ -897,7 +897,7 @@ extern	statetype s_worldwalk;
 
 #pragma warn -sus
 
-statetype s_worldkeen	= {NULL,NULL,stepthink,false,
+statetype s_worldkeen	= {/*NULL*/0,/*NULL*/0,stepthink,false,
 	false,360, 0,0, KeenWorldThink, NULL, DrawReact, &s_worldkeenwave1};
 
 statetype s_worldkeenwave1= {WORLDKEENWAVE1SPR,WORLDKEENWAVE1SPR,stepthink,false,
@@ -919,7 +919,7 @@ statetype s_worldkeensleep1	= {WORLDKEENSLEEP1SPR,WORLDKEENSLEEP1SPR,stepthink,f
 statetype s_worldkeensleep2	= {WORLDKEENSLEEP2SPR,WORLDKEENSLEEP2SPR,stepthink,false,
 	false,90, 0,0, KeenWorldThink, NULL, DrawReact, &s_worldkeensleep2};
 
-statetype s_worldwalk	= {NULL,NULL,slide,false,
+statetype s_worldwalk	= {/*NULL*/0,/*NULL*/0,slide,false,
 	false,4, 16,16, KeenWorldWalk, NULL, DrawReact, &s_worldwalk};
 
 #pragma warn +sus

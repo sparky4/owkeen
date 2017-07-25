@@ -1,18 +1,3 @@
-CA_Startup
-===============================================================================
-		CAL_GetGrChunkLength
-===============================================================================
-	grstarts[chunk+1]=1885431923
-	grstarts[chunk+1]=1885431923
-		grstarts 1885431923-	-4	=1885431919
-	chunkcomplen=1885431919
-
-chunk=0
-	 grstarts[chunk]=0000
-	&grstarts[chunk]=1ab4
-	 grstarts[chunk+1]=6873
-	&grstarts[chunk+1]=1ab8
-
-CA_FarRead doesn't support 64K reads yet!
+Out of memory!  Please make sure you have enough free memory.
 
 

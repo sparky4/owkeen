@@ -1,3 +1,0 @@
-id_sd.c(1905): Warning! W119: Address of static function 'SDL_TimingService' has been taken
-id_sd.c(1905): Warning! W119: Address of static function 'SDL_SBService' has been taken
-id_sd.c(1905): Warning! W119: Address of static function 'SDL_t0Service' has been taken

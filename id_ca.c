@@ -148,34 +148,9 @@ SDMode		oldsoundmode;
 
 void CAL_GetGrChunkLength (int chunk)
 {
-	printf("===============================================================================\n");
-	printf("		CAL_GetGrChunkLength\n");
-	printf("===============================================================================\n");
-	printf("	grstarts[chunk+1]=%ld\n", grstarts[chunk+1]);
-//	printf("lseek return=%ld\n",
 	lseek(grhandle,grstarts[chunk],SEEK_SET);
-//	printf("	chunkexplen=%ld\n", chunkexplen);
-	printf("	grstarts[chunk+1]=%ld\n", grstarts[chunk+1]);
-//	printf("read return=%d\n",
 	read(grhandle,&chunkexplen,sizeof(chunkexplen));
-//	printf("	chunkexplen=%ld\n", chunkexplen); IN_Ack();
 	chunkcomplen = grstarts[chunk+1]-grstarts[chunk]-4;
-	printf("		grstarts %ld-", grstarts[chunk+1]);	printf("	%ld", grstarts[chunk]-4);	printf("	=%ld\n", grstarts[chunk+1]-grstarts[chunk]-4);
-	printf("	chunkcomplen=%ld\n", chunkcomplen);
-	printf("\n");
-
-//	printf("	 grstarts=%04x\n", grstarts);
-//	printf("	*grstarts=%04x\n", *grstarts);
-//	printf("	&grstarts=%04x\n", &grstarts);
-	printf("chunk=%d\n", chunk);
-	printf("	 grstarts[chunk]=%04x\n", grstarts[chunk]);
-//	printf("	*grstarts[chunk]=%04x\n", *grstarts[chunk]);
-	printf("	&grstarts[chunk]=%04x\n", &grstarts[chunk]);
-	printf("	 grstarts[chunk+1]=%04x\n", grstarts[chunk+1]);
-//	printf("	*grstarts[chunk+1]=%04x\n", *grstarts[chunk+1]);
-	printf("	&grstarts[chunk+1]=%04x\n", &grstarts[chunk+1]);
-
-	printf("\n"); IN_Ack();
 }
 
 
@@ -936,7 +911,12 @@ void CAL_SetupGrFile (void)
 //
 // load the pic and sprite headers into the arrays in the data segment
 //
+#ifdef __WATCOMC__
 	grstarts[STRUCTPIC]=0;
+	grstarts[STRUCTPIC+1]=157;
+	grstarts[STRUCTPICM+1]=166;
+	grstarts[STRUCTSPRITE+1]=2702;
+#endif
 #if NUMPICS>0
 	MM_GetPtr(MEMPTRCONV pictable,NUMPICS*sizeof(pictabletype));
 	CAL_GetGrChunkLength(STRUCTPIC);		// position file pointer
@@ -1085,19 +1065,10 @@ void CA_Startup (void)
 	unlink ("PROFILE.TXT");
 	profilehandle = open("PROFILE.TXT", O_CREAT | O_WRONLY | O_TEXT);
 #endif
-#ifdef __WATCOMC__
-	printf("CA_Startup\n"); IN_Ack();
-#endif
 
 	CAL_SetupMapFile ();
 	CAL_SetupGrFile ();
-#ifdef __WATCOMC__
-	printf("."); IN_Ack();
-#endif
 	CAL_SetupAudioFile ();
-#ifdef __WATCOMC__
-	printf("ok\n"); IN_Ack();
-#endif
 
 	mapon = -1;
 	ca_levelbit = 1;
@@ -1949,6 +1920,7 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 	}
 
 	numcache = 0;
+//0000printf("CA_CacheMarks\n"); IN_Ack();
 //
 // go through and make everything not needed purgable
 //
@@ -2002,6 +1974,7 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 	barstep = (NUMBARS<<16)/numcache;
 	bufferstart = bufferend = 0;		// nothing good in buffer now
 
+//0000printf("	the loop\n");// IN_Ack();
 	for (i=0;i<NUMCHUNKS;i++)
 		if ( (grneeded[i]&ca_levelbit) && !grsegs[i])
 		{
@@ -2037,6 +2010,7 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 			compressed = grstarts[next]-pos;
 			endpos = pos+compressed;
 
+//0000printf("		if(compressed<=BUFFERSIZE)\n");// IN_Ack();
 			if (compressed<=BUFFERSIZE)
 			{
 				if (bufferstart<=pos
@@ -2084,7 +2058,12 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 				source = bigbufferseg;
 			}
 
+//0000printf("				b4	CAL_ExpandGrChunk	");
+#ifdef __WATCOMC__
+IN_Ack();
+#endif
 			CAL_ExpandGrChunk (i,source);
+//0000printf("ok\n");
 
 			if (compressed>BUFFERSIZE)
 				MM_FreePtr(&bigbufferseg);
