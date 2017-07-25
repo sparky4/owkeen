@@ -1,7 +1,7 @@
 Open Watcom Linker Version 2.0 beta Nov 19 2016 01:49:19 (64-bit)
 Copyright (c) 2002-2016 The Open Watcom Contributors. All Rights Reserved.
 Portions Copyright (c) 1985-2002 Sybase, Inc. All Rights Reserved.
-Created on:       17/07/25 08:50:21
+Created on:       17/07/25 09:00:26
 Executable Image: kdreams.exe
 creating a DOS executable
 
@@ -1772,4 +1772,4 @@ kdass.lib
 Stack size:  0800 (2048.)
 Memory size:  00038fa0 (233376.)
 Entry point address: 0ff2:35e0
-Link time: 00:00.83
+Link time: 00:00.79
