@@ -1530,7 +1530,7 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 	//
 	// everything else has an explicit size longword
 	//
-		expanded = *(long far *)source;
+		expanded = *((long far *)source);
 		source += 4;			// skip over length
 	}
 
@@ -1543,6 +1543,8 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 	else
 	{
 #ifdef __WATCOMC__
+printf("	source = %ld", *((long far *)source));
+printf("	source = %d\n", *((short far *)source));
 printf("	expanded=%ld	", expanded);
 IN_Ack();
 #endif

@@ -69,7 +69,7 @@ UPXQ=-qqq
 S_FLAGS=-sg -wo -st####-s
 ## -zu -zdp
 # -zdf -zff -zgf# -k16768#
-Z_FLAGS=-zk0 -zc -zt=32767 -zm -ei# -zp16
+Z_FLAGS=-zk0 -zc -zt=32767 -ei# -zp16
 O_FLAGS=-opnr -oe=24 -oil+ -outback -ohm -okf+
 T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1 -ecc
 

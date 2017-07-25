@@ -1,42 +1,280 @@
-===============================================================================
-		CAL_GetGrChunkLength
-===============================================================================
-	grstarts[chunk+1]=157
-	grstarts[chunk+1]=157
-		grstarts 157-	-4	=153
-	chunkcomplen=153
-
-chunk=0
-	 grstarts[chunk]=0000
-	&grstarts[chunk]=0000
-	 grstarts[chunk+1]=009d
-	&grstarts[chunk+1]=0004
-
-===============================================================================
-		CAL_GetGrChunkLength
-===============================================================================
-	grstarts[chunk+1]=166
-	grstarts[chunk+1]=166
-		grstarts 166-	153	=5
-	chunkcomplen=5
-
-chunk=1
-	 grstarts[chunk]=009d
-	&grstarts[chunk]=0004
-	 grstarts[chunk+1]=00a6
-	&grstarts[chunk+1]=0008
-
-===============================================================================
-		CAL_GetGrChunkLength
-===============================================================================
-	grstarts[chunk+1]=2702
-	grstarts[chunk+1]=2702
-		grstarts 2702-	162	=2532
-	chunkcomplen=2532
-
-chunk=2
-	 grstarts[chunk]=00a6
-	&grstarts[chunk]=0008
-	 grstarts[chunk+1]=0a8e
-	&grstarts[chunk+1]=000c
-
+	source = 1900	source = 1900
+	expanded=1900	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 465	source = 465
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 465	source = 465
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 640	source = 640
+	source = 480	source = 480
+	source = 300	source = 300
+	source = 300	source = 300
+	source = 450	source = 450
+	source = 450	source = 450
+	source = 560	source = 560
+	source = 405	source = 405
+	source = 510	source = 510
+	source = 390	source = 390
+	source = 380	source = 380
+	source = 240	source = 240
+	source = 240	source = 240
+	source = 450	source = 450
+	source = 450	source = 450
+	source = 540	source = 540
+	source = 330	source = 330
+	source = 300	source = 300
+	source = 315	source = 315
+	source = 480	source = 480
+	source = 465	source = 465
+	source = 465	source = 465
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 600	source = 600
+	source = 465	source = 465
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 450	source = 450
+	source = 540	source = 540
+	source = 420	source = 420
+	source = 240	source = 240
+	source = 480	source = 480
+	source = 420	source = 420
+	source = 480	source = 480
+	source = 420	source = 420
+	source = 405	source = 405
+	source = 420	source = 420
+	source = 405	source = 405
+	source = 480	source = 480
+	source = 435	source = 435
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 465	source = 465
+	source = 640	source = 640
+	source = 640	source = 640
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 435	source = 435
+	source = 360	source = 360
+	source = 450	source = 450
+	source = 480	source = 480
+	source = 480	source = 480
+	source = 435	source = 435
+	source = 360	source = 360
+	source = 35	source = 35
+	source = 35	source = 35
+	source = 465	source = 465
+	source = 435	source = 435
+	source = 465	source = 465
+	source = 435	source = 435
+	source = 570	source = 570
+	source = 465	source = 465
+	source = 225	source = 225
+	source = 150	source = 150
+	source = 160	source = 160
+	source = 160	source = 160
+	source = 150	source = 150
+	source = 150	source = 150
+	source = 160	source = 160
+	source = 160	source = 160
+	source = 160	source = 160
+	source = 160	source = 160
+	source = 230	source = 230
+	source = 230	source = 230
+	source = 160	source = 160
+	source = 160	source = 160
+	source = 75	source = 75
+	source = 75	source = 75
+	source = 240	source = 240
+	source = 240	source = 240
+	source = 240	source = 240
+	source = 240	source = 240
+	source = 240	source = 240
+	source = 240	source = 240
+	source = 150	source = 150
+	source = 150	source = 150
+	source = 160	source = 160
+	source = 345	source = 345
+	source = 345	source = 345
+	source = 70	source = 70
+	source = 70	source = 70
+	source = 80	source = 80
+	source = 80	source = 80
+	source = 80	source = 80
+	source = 120	source = 120
+	source = 120	source = 120
+	source = 120	source = 120
+	source = 180	source = 180
+	source = 560	source = 560
+	source = 160	source = 160
+	source = 320	source = 320
+	source = 320	source = 320
+	source = 80	source = 80
+	source = 640	source = 640
+	source = 1440	source = 1440
+	expanded=2304	ok
+	expanded=1440	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 640	source = 640
+	expanded=640	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 896	source = 896
+	expanded=896	ok
+	source = 896	source = 896
+	expanded=896	ok
+	source = 896	source = 896
+	expanded=896	ok
+	source = 256	source = 256
+	expanded=256	ok
+	source = 256	source = 256
+	expanded=256	ok
+	source = 256	source = 256
+	expanded=256	ok
+	source = 256	source = 256
+	expanded=256	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 384	source = 384
+	expanded=384	ok
+	source = 480	source = 480
+	expanded=480	ok
+	source = 480	source = 480
+	expanded=480	ok
+	source = 480	source = 480
+	expanded=480	ok
+	source = 320	source = 320
+	expanded=320	ok
+	source = 360	source = 360
