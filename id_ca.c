@@ -1495,6 +1495,7 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 	spritetabletype	*spr;
 
 
+//0000printf("CAL_ExpandGrChunk\n");
 	if (chunk>=STARTTILE8)
 	{
 	//
@@ -1541,7 +1542,14 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 		CAL_CacheSprite(chunk,source);
 	else
 	{
+#ifdef __WATCOMC__
+printf("	expanded=%ld	", expanded);
+IN_Ack();
+#endif
 		MM_GetPtr (&grsegs[chunk],expanded);
+#ifdef __WATCOMC__
+printf("ok\n");
+#endif
 		CAL_HuffExpand (source,grsegs[chunk],expanded,grhuffman);
 	}
 }
@@ -1920,7 +1928,6 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 	}
 
 	numcache = 0;
-//0000printf("CA_CacheMarks\n"); IN_Ack();
 //
 // go through and make everything not needed purgable
 //
@@ -1974,7 +1981,6 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 	barstep = (NUMBARS<<16)/numcache;
 	bufferstart = bufferend = 0;		// nothing good in buffer now
 
-//0000printf("	the loop\n");// IN_Ack();
 	for (i=0;i<NUMCHUNKS;i++)
 		if ( (grneeded[i]&ca_levelbit) && !grsegs[i])
 		{
@@ -2010,7 +2016,6 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 			compressed = grstarts[next]-pos;
 			endpos = pos+compressed;
 
-//0000printf("		if(compressed<=BUFFERSIZE)\n");// IN_Ack();
 			if (compressed<=BUFFERSIZE)
 			{
 				if (bufferstart<=pos
@@ -2058,12 +2063,7 @@ void CA_CacheMarks (char *title, boolean cachedownlevel)
 				source = bigbufferseg;
 			}
 
-//0000printf("				b4	CAL_ExpandGrChunk	");
-#ifdef __WATCOMC__
-IN_Ack();
-#endif
 			CAL_ExpandGrChunk (i,source);
-//0000printf("ok\n");
 
 			if (compressed>BUFFERSIZE)
 				MM_FreePtr(&bigbufferseg);
