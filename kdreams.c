@@ -31,11 +31,11 @@
 #include <string.h>
 
 #include "KD_DEF.H"
-#ifdef __WATCOMC__
+//#ifdef __WATCOMC__
 //#include "kdass.h"
 word drawofs;
 word fontspace;
-#endif
+//#endif
 #pragma hdrstop
 
 /*

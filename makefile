@@ -33,6 +33,7 @@
 to_os_path=\=/
 REMOVECOMMAND=rm -f
 COPYCOMMAND=cp -f
+MOVECOMMAND=mv -f
 DIRSEP=/
 OBJ=obj
 DUMP=cat
@@ -40,6 +41,7 @@ DUMP=cat
 to_os_path=/=\
 REMOVECOMMAND=del
 COPYCOMMAND=copy /y
+MOVECOMMAND=move /y
 DIRSEP=\
 OBJ=obj
 DUMP=type
@@ -136,7 +138,7 @@ LIBMAKERULE=*wlib $(LIBFLAGS) $(extra_$^&_obj_opts)$@ $<
 # List of executables to build
 #
 EXEC = &
-	kdreams.exe
+	kdreams.exe exmmtest.exe
 
 all: $(EXEC)
 
@@ -149,11 +151,13 @@ kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) $(KDASSLIB) $(STATICOBJS)
 # Test Executables!
 #
 #kdreamste.exe:	kdreamste.$(OBJ) $(KDOBJS)# $(TESTOBJS)
+exmmtest.exe:	exmmtest.$(OBJ) $(KDOBJS) $(KDASSLIB)
 
 #
 # executable's objects
 #
 kdreams.$(OBJ):	kdreams.c
+exmmtest.$(OBJ):	exmmtest.c
 #kdreamste.$(OBJ):	kdreamste.c
 #sega.$(OBJ):	sega.c
 

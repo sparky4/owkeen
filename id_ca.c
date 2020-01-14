@@ -911,7 +911,8 @@ void CAL_SetupGrFile (void)
 //
 // load the pic and sprite headers into the arrays in the data segment
 //
-#ifdef __WATCOMC__
+#if 0
+	//def __WATCOMC__
 	grstarts[STRUCTPIC]=0;
 	grstarts[STRUCTPIC+1]=157;
 	grstarts[STRUCTPICM+1]=166;
@@ -1065,10 +1066,12 @@ void CA_Startup (void)
 	unlink ("PROFILE.TXT");
 	profilehandle = open("PROFILE.TXT", O_CREAT | O_WRONLY | O_TEXT);
 #endif
-
 	CAL_SetupMapFile ();
+	printf("CA_Startup\n"); IN_Ack();
 	CAL_SetupGrFile ();
+	printf("CA_Startup\n"); IN_Ack();
 	CAL_SetupAudioFile ();
+	printf("CA_Startup\n"); IN_Ack();
 
 	mapon = -1;
 	ca_levelbit = 1;
@@ -1495,7 +1498,7 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 	spritetabletype	*spr;
 
 
-//0000printf("CAL_ExpandGrChunk\n");
+//0000	printf("CAL_ExpandGrChunk\n");
 	if (chunk>=STARTTILE8)
 	{
 	//
@@ -1542,17 +1545,23 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 		CAL_CacheSprite(chunk,source);
 	else
 	{
-#ifdef __WATCOMC__
+//#ifdef __WATCOMC__
 printf("	source = %ld", *((long far *)source));
 printf("	source = %d\n", *((short far *)source));
 printf("	expanded=%ld	", expanded);
 IN_Ack();
-#endif
-		MM_GetPtr (&grsegs[chunk],expanded);
+//#endif
+		MM_GetPtr (MEMPTRCONV grsegs[chunk],expanded);
+//#ifdef __WATCOMC__
+printf("ok\n");
+printf("contents of the buffer\n[\n%.*s\n]\n", expanded, (memptr *)grsegs[chunk]);
+IN_Ack();
+//#endif
+		CAL_HuffExpand ((byte huge *)source,(byte huge *)grsegs[chunk],expanded,grhuffman);
 #ifdef __WATCOMC__
+IN_Ack();
 printf("ok\n");
 #endif
-		CAL_HuffExpand (source,grsegs[chunk],expanded,grhuffman);
 	}
 }
 
