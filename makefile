@@ -145,13 +145,13 @@ all: $(EXEC)
 #
 # game executables
 #
-kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) $(KDASSLIB) $(STATICOBJS)
+kdreams.exe:	kdreams.$(OBJ) $(KDOBJS) $(KDASSLIB) $(STATICOBJS) id_hc.$(OBJ) kitten.$(OBJ)
 
 #
 # Test Executables!
 #
 #kdreamste.exe:	kdreamste.$(OBJ) $(KDOBJS)# $(TESTOBJS)
-exmmtest.exe:	exmmtest.$(OBJ) $(KDOBJS) $(KDASSLIB)
+exmmtest.exe:	exmmtest.$(OBJ) $(KDOBJS) $(KDASSLIB) $(STATICOBJS) id_hc.$(OBJ) kitten.$(OBJ)
 
 #
 # executable's objects
@@ -232,6 +232,8 @@ kdass.$(OBJ):	kdass.c
 id_vw_a_.$(OBJ):	id_vw.h	id_vw_a_.asm
 id_us_a_.$(OBJ):	id_us.h	id_us_a_.asm
 id_rf_a_.$(OBJ):	id_rf.h		id_rf_a_.asm
+id_hc.$(OBJ):	id_hc.c
+kitten.$(OBJ):	kitten.c
 
 #
 #other~

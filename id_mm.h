@@ -25,6 +25,11 @@
 #ifndef __TYPES__
 #include "ID_TYPES.H"
 #endif
+#ifdef __WATCOMC__
+#ifndef __ID_HC__
+#include "id_hc.h"
+#endif
+#endif
 
 void Quit (char *error);
 

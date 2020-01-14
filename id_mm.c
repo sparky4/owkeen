@@ -73,8 +73,10 @@ typedef struct mmblockstruct
 } mmblocktype;
 
 
-#define GETNEWBLOCK {if(!(mmnew=mmfree))Quit("MM_GETNEWBLOCK: No free blocks!")\
-	;mmfree=mmfree->next;}
+//#define GETNEWBLOCK {if(!(mmnew=mmfree))Quit("MM_GETNEWBLOCK: No free blocks!") ;mmfree=mmfree->next;}
+//
+
+#define GETNEWBLOCK {if(!mmfree)MML_ClearBlock();mmnew=mmfree;mmfree=mmfree->next;}
 
 #define FREEBLOCK(x) {*x->useptr=NULL;x->next=mmfree;mmfree=x;}
 
@@ -189,7 +191,7 @@ error:
 #endif
 
 	return emmcfems;
-	
+
 }
 
 /*

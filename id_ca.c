@@ -1067,11 +1067,11 @@ void CA_Startup (void)
 	profilehandle = open("PROFILE.TXT", O_CREAT | O_WRONLY | O_TEXT);
 #endif
 	CAL_SetupMapFile ();
-	printf("CA_Startup\n"); IN_Ack();
+	//printf("CA_Startup\n"); IN_Ack();
 	CAL_SetupGrFile ();
-	printf("CA_Startup\n"); IN_Ack();
+	//printf("CA_Startup\n"); IN_Ack();
 	CAL_SetupAudioFile ();
-	printf("CA_Startup\n"); IN_Ack();
+	//rprintf("CA_Startup\n"); IN_Ack();
 
 	mapon = -1;
 	ca_levelbit = 1;
@@ -1253,7 +1253,7 @@ void CAL_ShiftSprite (unsigned segment,unsigned source,unsigned dest,
 
 		mov	bp,[pixshift]
 		shl	bp,1
-		mov	bp,[shifttabletable+bp]	// bp holds pointer to shift table
+		mov	bp,WORD PTR [shifttabletable+bp]	// bp holds pointer to shift table
 
 //
 // table shift the mask
@@ -1545,18 +1545,18 @@ void CAL_ExpandGrChunk (int chunk, byte far *source)
 		CAL_CacheSprite(chunk,source);
 	else
 	{
-//#ifdef __WATCOMC__
+#ifdef __WATCOMC__
 printf("	source = %ld", *((long far *)source));
 printf("	source = %d\n", *((short far *)source));
 printf("	expanded=%ld	", expanded);
 IN_Ack();
-//#endif
+#endif
 		MM_GetPtr (MEMPTRCONV grsegs[chunk],expanded);
-//#ifdef __WATCOMC__
+#ifdef __WATCOMC__
 printf("ok\n");
 printf("contents of the buffer\n[\n%.*s\n]\n", expanded, (memptr *)grsegs[chunk]);
 IN_Ack();
-//#endif
+#endif
 		CAL_HuffExpand ((byte huge *)source,(byte huge *)grsegs[chunk],expanded,grhuffman);
 #ifdef __WATCOMC__
 IN_Ack();

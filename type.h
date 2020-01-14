@@ -1,5 +1,29 @@
 #ifndef __TYPE_H__
 #define __TYPE_H__
+
+//bcc
+#ifdef __BORLANDC__
+#define MEMPTRANDPERCONV	&
+//#define BYTEFARPTRCONV		(unsigned char far *)
+//#define SMDPTRANDPERCONV	&
+//#define SDFPTRANDPERCONV	&
+//#define OBTPTRANDPERCONV	&
+//#define SDTPTRANDPERCONV	&
+
+#define _nmalloc malloc
+#define _nfree free
+
+#define _nheapwalk heapwalk
+#define _fheapwalk farheapwalk
+
+//heapinfo vars
+#define _heapinfo heapinfo
+#define _pentry	ptr
+#define _size	size
+#define _useflag	in_use
+#endif
+//
+
 #ifdef __WATCOMC__
 /*
  * open watcom definitions for keen dreams
@@ -57,8 +81,10 @@ static struct SREGS	CPUSTKRegs;
 
 #define farmalloc _fmalloc
 #define farfree _ffree
+#define nearmalloc _nmalloc
+#define nearfree _nfree
 
-inline unsigned long farcoreleft()
+/*inline unsigned long farcoreleft()
 {
 //	_fheapgrow();
 	return 0x90000UL+16UL;
@@ -67,7 +93,7 @@ inline unsigned long coreleft()
 {
 	_nheapgrow();
 	return _memavl();//(dword)GetFreeSize();
-}
+}*/
 
 
 //from http://www.verycomputer.com/3_65d875cc818b54ec_1.htm

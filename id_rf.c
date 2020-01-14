@@ -1696,7 +1696,7 @@ asm	mov	ax,ds
 asm	mov	es,ax
 asm	xor	ax,ax
 asm	mov	cx,(UPDATESCREENSIZE-2)/2
-asm	mov	di,[newupdate]
+asm	mov	di,WORD PTR [newupdate]
 asm	rep	stosw
 asm	mov	[WORD PTR es:di],UPDATETERMINATE
 

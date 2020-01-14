@@ -27,6 +27,7 @@
 
 #include "id_heads.h"
 //#include "id_mm.h"
+//#include "KD_DEF.H"
 
 #pragma hdrstop
 
@@ -34,12 +35,12 @@
 #pragma warn -use
 
 //file load or read definition
-#define FILEREADLOAD
-#define FILEREAD
-//#define EXMMVERBOSE
+//#define FILEREADLOAD
+//#define FILEREAD
+#define EXMMVERBOSE
 #define BUFFDUMPPAUSE
-//#define EXMMVERBOSE__
-//	#define PRINTBBDUMP
+#define EXMMVERBOSE__
+	#define PRINTBBDUMP
 #define BUFFDUMP
 
 #ifdef __BORLANDC__
