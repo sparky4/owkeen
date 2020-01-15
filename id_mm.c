@@ -122,6 +122,7 @@ void 		MML_ShutdownEMS (void);
 void 		MM_MapEMS (void);
 boolean 	MML_CheckForXMS (void);
 void 		MML_ShutdownXMS (void);
+void		MML_ClearBlock (void);
 
 //==========================================================================
 #ifndef __ID_PM__
@@ -259,6 +260,185 @@ void MML_ShutdownXMS (void)
 //==========================================================================
 
 /*
+======================
+=
+= MML_UseSpace
+=
+= Marks a range of paragraphs as usable by the memory manager
+= This is used to mark space for the near heap, far heap, ems page frame,
+= and upper memory blocks
+=
+======================
+*/
+
+/*
+	extra = oldend - (segstart+seglength);
+
+	segmlen=extra;
+
+	//++++emsver stuff!
+	if(segm>1)/// || extra>=0x10000lu)
+	//if(extra>0xfffflu)
+	{
+		scan->blob=segm;
+
+		//MML_UseSpace(segstart, seglength);
+
+		printf("MML_UseSpace: Segment spans two blocks!\n");
+	//}
+	printf("segm=%u		", segm);
+	printf("ex=%lu	", extra);
+	printf("old=%u	", oldend);
+	printf("start+seglen=%lu\n", segstart+seglength);
+	printf("segsta=%x	", segstart);
+	printf("len=%lu	", scan->length);
+	printf("seglen=%lu	", seglength);
+	printf("segmlen=%lu\n", segmlen);
+	}
+//++++todo: linked list of segment!
+*/
+void MML_UseSpace (unsigned segstart, unsigned seglength)
+{
+	mmblocktype far *scan,far *last;
+	unsigned	oldend;
+	sdword		extra;
+	//word segm=1;
+
+	scan = last = mmhead;
+	mmrover = mmhead;		// reset rover to start of memory
+
+//
+// search for the block that contains the range of segments
+//
+	while (scan->start+scan->length < segstart)
+	{
+		last = scan;
+		scan = scan->next;
+	}
+
+//
+// find out how many blocks it spans!
+//
+	/*for(;seglength>=0x10000;seglength-=0xFFFF)
+	{
+		//printf("	seglen=%lu\n", segmlen);
+		segm++;
+	}*/
+
+//
+// take the given range out of the block
+//
+	oldend = scan->start + scan->length;
+	extra = oldend - (segstart+seglength);
+	if (extra < 0)
+#ifdef __DEBUG_MM__
+	{
+		printf("========================================\n");
+		printf("start=%x	", scan->start);
+		printf("old=%u	", oldend);
+		printf("start+seglen=%lu\n", segstart+seglength);
+		printf("segsta=%x	", segstart);
+		printf("len=%lu	", scan->length);
+		printf("seglen=%lu	", seglength);
+		printf("\n");
+		printf("MML_UseSpace: Segment spans two blocks!	%d\n", extra);
+		printf("========================================\n");
+		//return;
+	}
+#else
+		Quit ("MML_UseSpace: Segment spans two blocks!");
+#endif
+
+	if (segstart == scan->start)
+	{
+		last->next = scan->next;			// unlink block
+		FREEBLOCK(scan);
+		scan = last;
+	}
+	else
+		scan->length = segstart-scan->start;	// shorten block
+
+	if (extra > 0)
+	{
+		GETNEWBLOCK;
+		mmnew->useptr = NULL;
+
+		mmnew->next = scan->next;
+		scan->next = mmnew;
+		mmnew->start = segstart+seglength;
+		mmnew->length = extra;
+		mmnew->attributes = LOCKBIT;
+	}//else if(segm>0) goto segu;
+
+}
+
+//==========================================================================
+
+/*
+====================
+=
+= MML_ClearBlock
+=
+= We are out of blocks, so free a purgable block
+=
+====================
+*/
+
+void MML_ClearBlock ()
+{
+	mmblocktype far *scan;//,far *last;
+
+	scan = mmhead->next;
+
+	while(scan)
+	{
+		if(!(scan->attributes&LOCKBIT) && (scan->attributes&PURGEBITS) )
+		{
+			MM_FreePtr (scan->useptr);
+			return;
+		}
+		scan = scan->next;
+	}
+
+	Quit ("MM_ClearBlock: No purgable blocks!\n");
+}
+
+
+//==========================================================================
+
+/*
+===================
+=
+= MM_Reset
+=
+===================
+*/
+
+void MM_Reset ()
+{
+	//has to be 16
+	if(sizeof(mmblocktype)!=16)
+		return;
+/*
+#ifdef __BORLANDC__
+	strcpy(datadumpfilename, "mmdump.16b");
+#endif
+#ifdef __WATCOMC__
+	strcpy(datadumpfilename, "mmdump.16w");
+#endif
+
+#ifdef __BORLANDC__
+	strcpy(heapdumpfilename, "heap.16b");
+#endif
+#ifdef __WATCOMC__
+	strcpy(heapdumpfilename, "heap.16w");
+#endif*/
+}
+
+
+//==========================================================================
+
+/*
 ===================
 =
 = MM_Startup
@@ -290,6 +470,18 @@ void MM_Startup (void)
 	for (i=0;i<MAXBLOCKS-1;i++)
 		mmblocks[i].next = &mmblocks[i+1];
 	mmblocks[i].next = NULL;
+
+//
+// locked block of all memory until we punch out free space
+//
+	GETNEWBLOCK;
+	mmhead = mmnew;				// this will allways be the first node
+	mmnew->start = 0;
+	mmnew->length = 0xffff;
+	mmnew->attributes = LOCKBIT;
+	mmnew->next = NULL;
+	mmrover = mmhead;
+
 
 //
 // get all available near conventional memory segments

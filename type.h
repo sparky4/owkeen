@@ -153,6 +153,9 @@ typedef long fixed;
 #define _argc __argc
 #endif
 
+typedef signed long sdword;
+typedef unsigned long dword;
+
 #define MEMPTRCONV			(memptr *)&
 
 //#define	__ID_PM__
