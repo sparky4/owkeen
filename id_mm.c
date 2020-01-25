@@ -627,6 +627,23 @@ void MM_GetPtr (memptr *baseptr,unsigned long size)
 	mmnew->length = needed;
 	mmnew->useptr = baseptr;
 	mmnew->attributes = BASEATTRIBUTES;
+//	if(mmnew->useptr==NULL){
+#ifdef __DEBUG_MM__
+	printf("===============================================================================\n");
+	printf("		MM_GetPtr\n");
+	printf("===============================================================================\n");
+		//%04x
+		printf("	baseptr=%Fp	", baseptr); printf("useptr=%Fp\n", mmnew->useptr);
+		//printf("	*baseptr=%Fp	", *baseptr); printf("*useptr=%Fp\n", *(mmnew->useptr));
+		printf("	&baseptr=%Fp	", &baseptr); printf("&useptr=%Fp\n", &(mmnew->useptr));
+
+		printf("	baseptr=%04x	", baseptr); printf("useptr=%04x\n", mmnew->useptr);
+		//printf("	*baseptr=%04x	", *baseptr); printf("*useptr=%04x\n", *(mmnew->useptr));
+		printf("	&baseptr=%04u	", &baseptr); printf("&useptr=%04u\n", &(mmnew->useptr));
+
+		printf("	size is %lu\n", size);
+#endif
+	//Quit ("mmnew->useptr==NULL"); }
 
 	for (search = 0; search<3; search++)
 	{

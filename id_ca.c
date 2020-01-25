@@ -293,6 +293,16 @@ boolean CA_ReadFile (char *filename, memptr *ptr)
 		return false;
 
 	size = filelength (handle);
+//#ifdef __DEBUG_CA__
+		printf("===============================================================================\n");
+		printf("		CA_ReadFile\n");
+		printf("===============================================================================\n");
+		//%04x
+		printf("	ptr=%Fp\n", ptr);
+		printf("	*ptr=%Fp\n", *ptr);
+		printf("	&ptr=%Fp\n", &ptr);
+		printf("	size=%ld\n", size);
+//#endif
 	if (!CA_FarRead (handle,*ptr,size))
 	{
 		close (handle);
@@ -354,7 +364,26 @@ boolean CA_LoadFile (char *filename, memptr *ptr)
 		return false;
 
 	size = filelength (handle);
-	MM_GetPtr (ptr,size);
+//#ifdef __DEBUG_CA__
+		printf("===============================================================================\n");
+		printf("		CA_LoadFile\n");
+		printf("===============================================================================\n");
+		//%04x
+		printf("	ptr=%Fp\n", ptr);
+		printf("	*ptr=%Fp\n", *ptr);
+		printf("	&ptr=%Fp\n", &ptr);
+		printf("	size=%ld\n", size);
+//#endif
+	MM_GetPtr(ptr,size);
+//#ifdef __DEBUG_CA__
+		//%04x
+		printf("---------------------------------------\n");
+		printf("	ptr=%Fp\n", ptr);
+		printf("	*ptr=%Fp\n", *ptr);
+		printf("	&ptr=%Fp\n", &ptr);
+		printf("	size=%ld\n", size);
+		printf("-------------------------------------------------------------------------------\n");
+//#endif
 	if (!CA_FarRead (handle,*ptr,size))
 	{
 		close (handle);
@@ -1067,11 +1096,8 @@ void CA_Startup (void)
 	profilehandle = open("PROFILE.TXT", O_CREAT | O_WRONLY | O_TEXT);
 #endif
 	CAL_SetupMapFile ();
-	//printf("CA_Startup\n"); IN_Ack();
 	CAL_SetupGrFile ();
-	//printf("CA_Startup\n"); IN_Ack();
 	CAL_SetupAudioFile ();
-	//rprintf("CA_Startup\n"); IN_Ack();
 
 	mapon = -1;
 	ca_levelbit = 1;

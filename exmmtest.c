@@ -27,7 +27,7 @@
 #include "id_ca.h"
 #endif
 
-//void _seg *bufferseg;
+void _seg *buffersegegg;
 word drawofs;
 word fontspace;
 /*
@@ -341,17 +341,6 @@ main(int argc, char *argv[])
 								#ifdef PRINTBBDUMP
 								//0000PRINTBB; KEYP
 								#endif
-#ifdef __16_PM__
-#ifdef __DEBUG_PM__
-	dbg_debugpm=1;	//debug pm
-#endif
-#endif
-#ifdef __DEBUG_CA__
-	dbg_debugca=1;
-#endif
-#ifdef __DEBUG_MM__
-	dbg_debugmm=1;
-#endif
 
 	if(argv[1]){ strcpy(bakapee1, argv[1]);//bakapee1[] = *argv[1];
 	if(argv[2]) strcpy(bakapee2, argv[2]); }//bakapee2[] = argv[2]; }
@@ -365,9 +354,9 @@ main(int argc, char *argv[])
 	printf("stackavail()=%u\n", stackavail());
 	KEYP
 
-	IN_Startup();
-	MM_Startup();
-	CA_Startup();
+	IN_Startup();// printf("IN\n"); KEYP
+	MM_Startup();// printf("MM\n"); KEYP
+	//CA_Startup(); printf("CA\n"); KEYP
 
 								#ifdef PRINTBBDUMP
 								//0000
@@ -444,7 +433,7 @@ PRINTBB; KEYP
 	}
 
 
-	MM_ShowMemory();
+	//MM_ShowMemory();
 #if 0
 	{
 	boolean			done;
@@ -489,7 +478,7 @@ PRINTBB; KEYP
 	//printf("bakapee2=%s\n", bakapee2);
 	MM_FreePtr(BBUFPTR);
 
-	CA_Shutdown();
+	//CA_Shutdown();
 	MM_Shutdown();
 	IN_Shutdown();
 /*	printf("========================================\n");

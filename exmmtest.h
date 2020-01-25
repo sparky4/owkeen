@@ -35,13 +35,15 @@
 #pragma warn -use
 
 //file load or read definition
-//#define FILEREADLOAD
-//#define FILEREAD
+#define FILEREADLOAD
+#define FILEREAD
 #define EXMMVERBOSE
 #define BUFFDUMPPAUSE
 #define EXMMVERBOSE__
 	#define PRINTBBDUMP
 #define BUFFDUMP
+
+#define __DEBUG_MM__
 
 #ifdef __BORLANDC__
 #define NOVID
@@ -53,7 +55,7 @@
 
 #define KEYP IN_Shutdown(); printf("\n\npress any key to continue!\n"); getch(); IN_Startup();
 
-#define BBUFNAME bufferseg
+#define BBUFNAME buffersegegg
 //#define INITBBUF static memptr BBUFNAME;
 #define BBUFPTR	MEMPTRCONV BBUFNAME
 

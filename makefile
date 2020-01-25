@@ -60,6 +60,10 @@ WLIBQ=-q
 WCLQ=-q
 UPXQ=-qqq
 
+# stacksize
+STKSIZ=32768
+#STKSIZ=24576#40960
+
 #
 # compile flags
 #
@@ -68,9 +72,9 @@ UPXQ=-qqq
 #-zp{1,2,4,8,16} struct packing align.
 #-ei force enums to be type int
 #-wo diagnose problems in overlaid code
-S_FLAGS=-sg -wo -st####-s
+S_FLAGS=-sg -wo -st####-s -k$(STKSIZ)
 ## -zu -zdp
-# -zdf -zff -zgf# -k16768#
+# -zdf -zff -zgf#
 Z_FLAGS=-zk0 -zc -zt=32767 -ei# -zp16
 O_FLAGS=-opnr -oe=24 -oil+ -outback -ohm -okf+
 T_FLAGS=-bt=dos -mm -0 -fpi87 -fo=.$(OBJ) -d1 -ecc
@@ -138,7 +142,7 @@ LIBMAKERULE=*wlib $(LIBFLAGS) $(extra_$^&_obj_opts)$@ $<
 # List of executables to build
 #
 EXEC = &
-	kdreams.exe exmmtest.exe
+	exmmtest.exe#kdreams.exe
 
 all: $(EXEC)
 
@@ -157,7 +161,7 @@ exmmtest.exe:	exmmtest.$(OBJ) $(KDOBJS) $(KDASSLIB) $(STATICOBJS) id_hc.$(OBJ) k
 # executable's objects
 #
 kdreams.$(OBJ):	kdreams.c
-exmmtest.$(OBJ):	exmmtest.c
+exmmtest.obj:	exmmtest.c
 #kdreamste.$(OBJ):	kdreamste.c
 #sega.$(OBJ):	sega.c
 
@@ -243,7 +247,7 @@ clean: .symbolic
 	#@for %f in ($(STATICOBJS)) do @if exist %f $(COPYCOMMAND) %f static/
 !ifdef __LINUX__
 	@rm *.LIB
-	@rm *.EXE
+	#@rm *.EXE
 	#++@if exist src/obj/*.EXE	mv src/obj/*.EXE bcwolf.exe
 	#@wmake -h kdassass
 	#@if exist *.OBJ $(REMOVECOMMAND) *.OBJ
